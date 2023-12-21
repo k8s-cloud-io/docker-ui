@@ -1,0 +1,12 @@
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.link-primary {
+  @extend .text-primary;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

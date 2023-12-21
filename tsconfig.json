@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "module": "es2020",
+    "target": "es2020",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "baseUrl": "./",
+    "paths": {
+      "@core": ["src/core/index.tsx"],
+      "@core/": ["src/core/"],
+      "@core/*": ["src/core/*"],
+      "@projections/*": ["src/projections/*"]
+    }
+  },
+  "include": [
+    "./src/**/*",
+  ]
+}

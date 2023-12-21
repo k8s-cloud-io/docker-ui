@@ -1,0 +1,238 @@
+$info: #A0D5EE;
+$primary: #1565c0;
+$success: #479a63;
+$danger: #f44336;
+$warning: #d89a39;
+$selected-bg: #dedede;
+
+@import "bootstrap";
+@import "fonts";
+@import "text";
+
+body {
+  @extend .fw-300;
+  @extend .fs-6;
+  font-family: "Roboto", sans-serif;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.flex {
+  @extend .d-flex;
+}
+
+.alert {
+  @extend .p-2;
+  @extend .w-100;
+  border-radius: 0;
+}
+
+.icon-cell {
+  width: 28px;
+}
+
+.btn {
+  @extend .btn-sm;
+  @extend .rounded-1;
+  min-width: 80px;
+
+  &.btn-danger {
+    @extend .text-white;
+  }
+}
+
+.dropdown-menu {
+  @extend .rounded-1;
+  @extend .shadow-sm;
+
+  li {
+    @extend .cursor-pointer;
+    @extend .fs-6;
+    @extend .flex;
+    @extend .flex-row;
+    @extend .align-items-center;
+    line-height: 2 !important;
+    &:active {
+      .material-icons,
+      .material-icons-outlined {
+        @extend .text-white;
+      }
+    }
+  }
+}
+
+.page {
+  @extend .flex;
+  @extend .flex-column;
+  @extend .p-0;
+  @extend .m-0;
+
+  .navbar {
+    max-height: 56px;
+  }
+
+  & .page-container {
+    @extend .p-0;
+    @extend .flex;
+    @extend .flex-column;
+    margin-top: 56px;
+
+    & .page-title {
+      @extend .p-2;
+      @extend .ps-3;
+      @extend .h5;
+      @extend .m-0;
+      @extend .fw-400;
+      border-bottom: 1px solid var(--bs-border-color);
+    }
+
+    & .page-navigation {
+      @extend .nav;
+      @extend .flex-column;
+      width: 10%;
+
+      & li {
+        @extend .nav-item;
+
+        & a {
+          @extend .nav-link;
+          @extend .fs-6;
+          @extend .text-dark;
+
+          &:hover {
+            @extend .bg-light;
+          }
+
+          &.active {
+            background-color: $selected-bg !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.table.data-table {
+  @extend .w-100;
+
+  .form-check {
+    @extend .ps-0;
+    min-height: unset;
+    input[type=checkbox] {
+      @extend .m-0;
+      width: 18px;
+      height: 18px;
+      border-radius: 0;
+      outline: none;
+      box-shadow: none !important;
+      &:checked {
+        --bs-form-check-bg-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%23fff%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20stroke-width%3D%272%27%20d%3D%27m6%2010%203%203%206-6%27%2F%3E%3C%2Fsvg%3E");
+      }
+    }
+  }
+  th {
+    @extend .fw-500;
+    @extend .bg-light;
+    @extend .fs-7;
+    @extend .pt-1;
+    @extend .pb-1;
+    vertical-align: middle;
+    line-height: normal;
+    text-transform: uppercase;
+  }
+
+  td {
+    @extend .pt-1;
+    @extend .pb-1;
+    vertical-align: middle;
+    line-height: normal;
+  }
+
+  &.vertical-align-top, .vertical-align-top {
+    vertical-align: top;
+  }
+}
+
+.toolbar {
+  @extend .w-100;
+  @extend .align-items-center;
+  @extend .flex;
+  @extend .flex-row;
+  @extend .border-bottom;
+  @extend .mb-2;
+  @extend .pb-2;
+
+  .spacer {
+    @extend .flex;
+    flex-grow: 1;
+  }
+
+  .btn {
+    @extend .btn-sm;
+    @extend .text-dark;
+    @extend .flex;
+    @extend .flex-row;
+    @extend .align-items-center;
+    @extend .rounded-0;
+    @extend .ps-2;
+    @extend .pe-2;
+    @extend .pt-1;
+    @extend .pb-1;
+    @extend .text-uppercase;
+    @extend .fw-400;
+
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+    text-decoration: none;
+    cursor: pointer;
+    min-width: unset;
+    line-height: 1.2;
+
+    .material-icons,
+    .material-icons-outlined,
+    svg {
+      @extend .me-1;
+      font-size: 20px;
+      height: 21px;
+    }
+
+    span {
+      line-height: normal;
+
+      &:nth-of-type(2) {
+        font-size: .75rem !important;
+        font-weight: 400 !important;
+      }
+    }
+
+    &:disabled {
+      color: #999 !important;
+
+      span,
+      .material-icons,
+      .material-icons-outlined {
+        color: #999 !important;
+      }
+    }
+
+    &:hover {
+      background-color: #eeeeee;
+    }
+
+    &:active {
+      background-color: #dedede;
+    }
+  }
+}
+
+.modal {
+  .modal-title {
+    @extend .h6;
+    @extend .fw-500;
+    @extend .m-0;
+    @extend .p-0;
+  }
+}
