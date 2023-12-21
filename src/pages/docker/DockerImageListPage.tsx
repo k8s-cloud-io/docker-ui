@@ -62,14 +62,12 @@ const DockerImageListView = () => {
                     let name = parts[0];
                     let version = parts[1];
                     return <span className={'link-primary'} onClick={() => {
-                        setDetailsVisible(() => {
-                            setSelectedImage({
-                                id: value.id,
-                                name,
-                                version
-                            });
-                            return true;
+                        setSelectedImage({
+                            id: value.id,
+                            name,
+                            version
                         });
+                        setDetailsVisible(true);
                     }}>{name}</span>;
                 },
                 version: (value: any) => {
@@ -83,16 +81,19 @@ const DockerImageListView = () => {
             checkable
             items={state.data['images']}
         />
-        <ImageListDetails
-            id={selectedImage?.id}
-            name={selectedImage?.name}
-            version={selectedImage?.version}
-            visible={detailsVisible}
-            onHide={() => {
-                setSelectedImage(null);
-                setDetailsVisible(null)
-            }}
-        />
+        {
+            detailsVisible &&
+            <ImageListDetails
+                id={selectedImage?.id}
+                name={selectedImage?.name}
+                version={selectedImage?.version}
+                visible={true}
+                onHide={() => {
+                    setSelectedImage(null);
+                    setDetailsVisible(false)
+                }}
+            />
+        }
     </>
 }
 

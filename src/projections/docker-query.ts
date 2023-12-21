@@ -28,6 +28,20 @@ export const IMAGE_LIST = gql`
     }
 `;
 
+export const IMAGE_DETAILS = gql`
+    query image($id: String!) {
+        image(id: $id) {
+            id
+            repoTags
+            comment
+            created
+            config
+            size
+            labels
+        }
+    }
+`;
+
 export const NETWORK_LIST = gql`
     query networks {
         networks {
