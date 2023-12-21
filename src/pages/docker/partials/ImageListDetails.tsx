@@ -3,6 +3,19 @@ import {Alert, OffCanvas} from "@k8s-cloud-io/react-bootstrap";
 import {ImageDetailsProps, LoadingProps} from "./props";
 import {useGraphQLClient} from "@k8s-cloud-io/react-graphql";
 import {IMAGE_DETAILS} from "@projections/docker-query";
+import dayjs from "dayjs";
+
+function b2s(byteVal: number){
+    const units=["Bytes", "KB", "MB", "GB", "TB"];
+    let counter=0;
+    const kb= 1024;
+    let div= byteVal;
+    while(div >= kb){
+        counter++;
+        div= div/kb;
+    }
+    return div.toFixed(1) + " " + units[counter];
+}
 
 export const ImageListDetails = (props: ImageDetailsProps) => {
     if( !props.id ) return null;
@@ -61,9 +74,107 @@ export const ImageListDetails = (props: ImageDetailsProps) => {
             }
             {
                 state.data &&
-                <table className={'table data-table table-bordered small'}>
-
-                </table>
+                <>
+                    <h6 className={'mb-3'}>General</h6>
+                    {
+                        state.data['comment'] &&
+                        <div className={'mb-2 text-secondary'}><i>{state.data['comment']}</i></div>
+                    }
+                    <table className={'table data-table table-bordered small'}>
+                        <tr>
+                            <th className={'bg-light border-1 ps-2 pe-2'}>created</th>
+                            <td className={'border-1 ps-2 pe-2'}>{dayjs(state.data['created']).format('YYYY-MM-DD HH:mm:ss')}</td>
+                        </tr>
+                        <tr>
+                            <th className={'bg-light border-1 ps-2 pe-2'}>size</th>
+                            <td className={'border-1 ps-2 pe-2'}>{b2s(state.data.size)}</td>
+                        </tr>
+                    </table>
+                    <h6 className={'mb-3'}>Executable</h6>
+                    <table className={'table data-table table-bordered small'}>
+                        {
+                            state.data.config['cmd'] &&
+                            <tr>
+                                <th className={'bg-light border-1 ps-2 pe-2'}>CMD</th>
+                                <td className={'border-1 ps-2 pe-2'}>{state.data.config['cmd'].map( (command: string) => {
+                                    return <div className={'p-0'}>{command}</div>
+                                })}</td>
+                            </tr>
+                        }
+                        {
+                            state.data.config['entrypoint'] &&
+                            <tr>
+                                <th className={'bg-light border-1 ps-2 pe-2'}>Entry Point</th>
+                                <td className={'border-1 ps-2 pe-2'}>{state.data.config['entrypoint'].map( (ep: string) => {
+                                    return <div className={'p-0'}>{ep}</div>
+                                })}</td>
+                            </tr>
+                        }
+                    </table>
+                    {
+                        (state.data.config['hostname'] || state.data.config['domainname'] || state.data.config['exposedPorts']) &&
+                        <>
+                            <h6 className={'mb-3'}>Networking</h6>
+                            <table className={'table data-table table-bordered small'}>
+                                {
+                                    state.data.config['hostname'] &&
+                                    <tr>
+                                        <th className={'bg-light border-1 ps-2 pe-2'}>Hostname</th>
+                                        <td className={'border-1 ps-2 pe-2'}>{state.data.config['hostname']}</td>
+                                    </tr>
+                                }
+                                {
+                                    state.data.config['domainname'] &&
+                                    <tr>
+                                        <th className={'bg-light border-1 ps-2 pe-2'}>Hostname</th>
+                                        <td className={'border-1 ps-2 pe-2'}>{state.data.config['domainname']}</td>
+                                    </tr>
+                                }
+                                {
+                                    state.data.config['exposedPorts'] &&
+                                    <tr>
+                                        <th className={'bg-light border-1 ps-2 pe-2'}>Exposed Ports</th>
+                                        <td className={'border-1 ps-2 pe-2'}>{Object.keys(state.data.config['exposedPorts']).map (key => {
+                                            return <span className={'flex p-0'}>{key}</span>
+                                        })}</td>
+                                    </tr>
+                                }
+                            </table>
+                        </>
+                    }
+                    {
+                        state.data.config.env && state.data.config.env?.length > 0 &&
+                        <>
+                            <h6 className={'mb-3'}>Environment</h6>
+                            <table className={'table data-table table-bordered small'}>
+                                <tr>
+                                    <th className={'bg-light border-1 ps-2 pe-2 vertical-align-top'}>Environment</th>
+                                    <td className={'border-1 ps-2 pe-2 vertical-align-top'}>{
+                                        state.data.config.env.map( (keyPair:any) => {
+                                            return <div className={'p-0'}>{keyPair}</div>
+                                        })
+                                    }</td>
+                                </tr>
+                            </table>
+                        </>
+                    }
+                    {
+                        state.data.config['volumes'] &&
+                        <>
+                            <h6 className={'mb-3'}>Volumes</h6>
+                            <table className={'table data-table table-bordered small'}>
+                                <tr>
+                                    <th className={'bg-light border-1 ps-2 pe-2 vertical-align-top'}>Volumes</th>
+                                    <td className={'border-1 ps-2 pe-2 vertical-align-top'}>{
+                                        Object.keys(state.data.config['volumes']).map( (volume:any) => {
+                                            return <div className={'p-0'}>{volume}</div>
+                                        })
+                                    }</td>
+                                </tr>
+                            </table>
+                        </>
+                    }
+                </>
             }
         </OffCanvas.Body>
     </OffCanvas>
