@@ -5,11 +5,13 @@ import React, { useState} from "react";
 import {CONTAINER_LIST} from "@projections/docker-query";
 import {CONTAINER_PRUNE, CONTAINER_RESTART, CONTAINER_START, CONTAINER_STOP} from "@projections/docker-mutation";
 import dayjs from "dayjs";
-import {Dropdown, OffCanvas} from "@k8s-cloud-io/react-bootstrap";
+import {Dropdown} from "@k8s-cloud-io/react-bootstrap";
+import {ContainerListDetails} from "./partials/ContainerListDetails";
 
 const DockerContainerListView = () => {
     const [selectedItems, setSelectedItems] = useState([]);
-    const [detailsVisible, setDetailsVisible] = useState(null);
+    const [detailsVisible, setDetailsVisible] = useState(false);
+    const [selectedContainer, setSelectedContainer] = useState(null)
     const [startDialogVisible, setStartDialogVisible] = useState(false);
     const [stopDialogVisible, setStopDialogVisible] = useState(false);
     const [restartDialogVisible, setRestartDialogVisible] = useState(false);
@@ -125,7 +127,10 @@ const DockerContainerListView = () => {
                             if( name.startsWith('/'))
                                 name = name.substring(1);
                             return <span className={'link-primary'} onClick={() => {
-                                setDetailsVisible(value);
+                                setDetailsVisible(() => {
+                                    setSelectedContainer(value);
+                                    return true;
+                                });
                             }}>{name}</span>;
                         },
                         image: (value: any) => {
@@ -210,14 +215,12 @@ const DockerContainerListView = () => {
                     checkable
                     items={state.data['containers']}
                 />
-                <OffCanvas direction={'end'} show={detailsVisible} onHide={() => setDetailsVisible(null)}>
-                    <OffCanvas.Header closeButton>
-                        <OffCanvas.Title>{detailsVisible?.names[0]}</OffCanvas.Title>
-                    </OffCanvas.Header>
-                    <OffCanvas.Body>
-                        CONTENT COMES HERE
-                    </OffCanvas.Body>
-                </OffCanvas>
+                <ContainerListDetails visible={detailsVisible} data={selectedContainer} onHide={() => {
+                    setDetailsVisible(() => {
+                        setSelectedContainer(null);
+                        return false;
+                    })
+                }}/>
             </>
         }
     </>

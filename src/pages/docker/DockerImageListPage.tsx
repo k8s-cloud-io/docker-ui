@@ -5,7 +5,7 @@ import React, {useState} from "react";
 import {IMAGE_LIST} from "@projections/docker-query";
 import {IMAGE_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
-import {ImageDetails} from "./partials/ImageDetails";
+import {ImageListDetails} from "./partials/ImageListDetails";
 
 const DockerImageListView = () => {
     const [selectedItems, setSelectedItems] = useState([]);
@@ -83,7 +83,7 @@ const DockerImageListView = () => {
             checkable
             items={state.data['images']}
         />
-        <ImageDetails
+        <ImageListDetails
             id={selectedImage?.id}
             name={selectedImage?.name}
             version={selectedImage?.version}

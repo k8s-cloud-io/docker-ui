@@ -8,7 +8,7 @@ type ImageDetailsProps = {
     visible: boolean,
     onHide: () => void
 }
-export const ImageDetails = (props: ImageDetailsProps) => {
+export const ImageListDetails = (props: ImageDetailsProps) => {
     return <OffCanvas direction={'end'} show={props.visible} onHide={props.onHide}>
         <OffCanvas.Header closeButton>
             <OffCanvas.Title>{props.name} ({props.version})</OffCanvas.Title>
