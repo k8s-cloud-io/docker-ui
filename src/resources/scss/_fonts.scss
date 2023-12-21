@@ -43,5 +43,6 @@
 }
 
 h6, .h6 {
-  @extend .fw-400;
+  font-size: .8rem !important;
+  @extend .fw-500;
 }
