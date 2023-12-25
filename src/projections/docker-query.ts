@@ -59,3 +59,28 @@ export const VOLUME_LIST = gql`
         }
     }
 `;
+
+export const CONTAINER_DETAILS = gql`
+    query container($id: String!) {
+        container(id: $id) {
+            id
+            name
+            created
+            state {
+                status
+                startedAt
+            }
+            config {
+                hostname
+                env
+                image
+                labels
+                networkDisabled
+            }
+            networkSettings {
+                networks
+                ports
+            }
+        }
+    }
+`;
