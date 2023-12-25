@@ -215,12 +215,15 @@ const DockerContainerListView = () => {
                     checkable
                     items={state.data['containers']}
                 />
-                <ContainerListDetails visible={detailsVisible} data={selectedContainer} onHide={() => {
-                    setDetailsVisible(() => {
-                        setSelectedContainer(null);
-                        return false;
-                    })
-                }}/>
+                {
+                    detailsVisible &&
+                    <ContainerListDetails visible={true} data={selectedContainer} onHide={() => {
+                        setDetailsVisible(() => {
+                            setSelectedContainer(null);
+                            return false;
+                        })
+                    }}/>
+                }
             </>
         }
     </>
