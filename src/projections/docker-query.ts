@@ -48,6 +48,9 @@ export const NETWORK_LIST = gql`
         networks {
             name
             created
+            scope
+            driver
+            iPAM
         }
     }
 `;

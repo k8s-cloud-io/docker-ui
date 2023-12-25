@@ -49,11 +49,26 @@ const DockerNetworkListView = () => {
         <ListView
             onSelectionChange={(items) => setSelectedItems(items)}
             headers={[
-                'name', 'created at'
+                'name', 'driver', 'scope', 'subnet', 'created at'
             ]}
             fields={{
                 name: (value: any) => {
                     return value['name'];
+                },
+                driver: (value: any) => {
+                    return value['driver'];
+                },
+                scope: (value: any) => {
+                    return value['scope'];
+                },
+                subnet: (value: any) => {
+                    if( value['iPAM']['config']?.length ) {
+                       return value['iPAM']['config'].map( (item:any) => {
+                           return <span className={'flex p-0'}>{item['subnet']}</span>
+                       });
+                    }
+
+                    return null;
                 },
                 created: (value: any) => {
                     return dayjs(value.created).format("YYYY-MM-DD HH:mm:ss")
