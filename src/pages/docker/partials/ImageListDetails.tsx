@@ -4,18 +4,7 @@ import {ImageDetailsProps, LoadingProps} from "./props";
 import {useGraphQLClient} from "@k8s-cloud-io/react-graphql";
 import {IMAGE_DETAILS} from "@projections/docker-query";
 import dayjs from "dayjs";
-
-function b2s(byteVal: number){
-    const units=["Bytes", "KB", "MB", "GB", "TB"];
-    let counter=0;
-    const kb= 1024;
-    let div= byteVal;
-    while(div >= kb){
-        counter++;
-        div= div/kb;
-    }
-    return div.toFixed(1) + " " + units[counter];
-}
+import {bytesToSize} from "@core/utils";
 
 export const ImageListDetails = (props: ImageDetailsProps) => {
     if( !props.id ) return null;
@@ -87,7 +76,7 @@ export const ImageListDetails = (props: ImageDetailsProps) => {
                         </tr>
                         <tr>
                             <th className={'bg-light border-1 ps-2 pe-2'}>size</th>
-                            <td className={'border-1 ps-2 pe-2'}>{b2s(state.data.size)}</td>
+                            <td className={'border-1 ps-2 pe-2'}>{bytesToSize(state.data.size)}</td>
                         </tr>
                     </table>
                     <h6 className={'mb-3'}>Executable</h6>

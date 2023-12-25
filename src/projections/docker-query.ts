@@ -24,6 +24,7 @@ export const IMAGE_LIST = gql`
             id
             created
             repoTags
+            size
         }
     }
 `;

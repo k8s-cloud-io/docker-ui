@@ -6,6 +6,7 @@ import {IMAGE_LIST} from "@projections/docker-query";
 import {IMAGE_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {ImageListDetails} from "./partials/ImageListDetails";
+import {bytesToSize} from "@core/utils";
 
 const DockerImageListView = () => {
     const [selectedItems, setSelectedItems] = useState([]);
@@ -52,7 +53,7 @@ const DockerImageListView = () => {
         <ListView
             onSelectionChange={(items) => setSelectedItems(items)}
             headers={[
-                'name', 'version', 'created at'
+                'name', 'version', 'size', 'created at'
             ]}
             fields={{
                 name: (value: any) => {
@@ -73,6 +74,9 @@ const DockerImageListView = () => {
                 version: (value: any) => {
                     const parts = value['repoTags']?.length ? value['repoTags'][0].split(":") : [];
                     return parts.length ? parts[1] : '<unknown>';
+                },
+                size: (value: any) => {
+                    return bytesToSize(value['size']);
                 },
                 created: (value: any) => {
                     return dayjs(value.created * 1000).format("YYYY-MM-DD HH:mm:ss")
