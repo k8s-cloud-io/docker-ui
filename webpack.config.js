@@ -42,6 +42,12 @@ const buildFrontend = (_, config) => {
         },
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            alias: {
+                'react': 'preact/compat',
+                'React': 'preact/compat',
+                'react-dom': 'preact/compat',
+                'ReactDOM': 'preact/compat'
+            },
             "plugins": [
                 new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })
             ]
