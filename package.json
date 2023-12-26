@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@fontsource/roboto": "^5.0.8",
-    "@k8s-cloud-io/react-bootstrap": "^1.0.15",
+    "@k8s-cloud-io/react-bootstrap": "^1.0.17",
     "@k8s-cloud-io/react-graphql": "^1.0.41",
     "@k8s-cloud-io/react-router": "^1.0.139",
     "@popperjs/core": "^2.11.8",
