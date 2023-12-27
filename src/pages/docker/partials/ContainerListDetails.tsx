@@ -93,6 +93,21 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
                                 </tr>
                             </>
                         }
+                        {
+                            Object.keys(state.data.config.labels || {}).length > 0 &&
+                            <>
+                                <tr>
+                                    <th className={'bg-light border-1 ps-2 pe-2'}>Labels</th>
+                                    <td className={'border-1 ps-2 pe-2'}>
+                                        {
+                                            Object.keys(state.data.config.labels).map( label => {
+                                                return <span className={'p-0'}>{label}: {state.data.config.labels[label]}</span>
+                                            })
+                                        }
+                                    </td>
+                                </tr>
+                            </>
+                        }
                     </table>
                     <h6 className={'mb-3'}>Networking</h6>
                     <table className={'table data-table table-bordered'}>
@@ -112,6 +127,25 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
                         })
                     }
                     </table>
+                    {
+                        state.data['config']['env'] &&
+                        <>
+                            <h6 className={'mb-3'}>Environment</h6>
+                            <table className={'table data-table table-bordered'}>
+                                {
+                                    state.data['config']['env'].map( (env: string) => {
+                                        const parts = env.split("=");
+                                        return <tr>
+                                            <th className={'bg-light border-1 ps-2 pe-2'}>{parts[0].trim()}</th>
+                                            <td className={'border-1 ps-2 pe-2'}>
+                                                {parts[1].trim()}
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                            </table>
+                        </>
+                    }
                 </>
             }
         </OffCanvas.Body>
