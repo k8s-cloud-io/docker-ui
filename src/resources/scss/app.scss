@@ -38,7 +38,9 @@ body {
   @extend .rounded-1;
   min-width: 80px;
 
-  &.btn-danger {
+  &.btn-danger,
+  &.btn-primary,
+  &.btn-success {
     @extend .text-white;
   }
 }
@@ -194,6 +196,7 @@ body {
     cursor: pointer;
     min-width: unset;
     line-height: 1.2;
+    transition: background-color 250ms ease;
 
     .material-icons,
     .material-icons-outlined,
@@ -222,11 +225,11 @@ body {
       }
     }
 
-    &:hover {
+    &:not(.btn-danger, .btn.success, .btn-primary):hover {
       background-color: #eeeeee;
     }
 
-    &:active {
+    &:not(.btn-danger, .btn.success, .btn-primary):active {
       background-color: #dedede;
     }
   }
