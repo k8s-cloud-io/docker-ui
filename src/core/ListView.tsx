@@ -1,5 +1,5 @@
-import { Checkbox } from '.';
 import { uniqueId } from './utils';
+import { Checkbox } from '@k8s-cloud-io/react-bootstrap';
 import React, {
     ReactNode,
     forwardRef,

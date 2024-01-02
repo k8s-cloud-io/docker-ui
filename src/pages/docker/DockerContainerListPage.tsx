@@ -1,12 +1,13 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, Alert, Button, ListView, BlockingDialog} from "@core";
+import {Page, Toolbar, ListView, BlockingDialog} from "@core";
 import {DockerPage} from "./DockerPage";
 import React, { useState} from "react";
 import {CONTAINER_LIST} from "@projections/docker-query";
 import {CONTAINER_PRUNE, CONTAINER_RESTART, CONTAINER_START, CONTAINER_STOP} from "@projections/docker-mutation";
 import dayjs from "dayjs";
-import {Dropdown} from "@k8s-cloud-io/react-bootstrap";
+import {Alert, Button, Dropdown} from "@k8s-cloud-io/react-bootstrap";
 import {ContainerListDetails} from "./partials/ContainerListDetails";
+import {Modal as BSModal} from "bootstrap";
 
 const DockerContainerListView = () => {
     const [selectedItems, setSelectedItems] = useState([]);
@@ -24,6 +25,12 @@ const DockerContainerListView = () => {
         setRestartDialogVisible(false);
         setStopDialogVisible(false);
         setTimeout(() => {
+            ['startContainerDialog', 'restartContainerDialog', 'stopContainerDialog'].forEach((dialog) => {
+                const e = document.querySelector(`#${dialog}`);
+                if( e != undefined ) {
+                    BSModal.getOrCreateInstance(e).hide();
+                }
+            })
             state.refresh();
         }, 250)
     }
@@ -83,19 +90,25 @@ const DockerContainerListView = () => {
             <Alert type={'info'}>Please wait, while loading...</Alert>
         }
         <BlockingDialog
+            id={'startContainerDialog'}
             title={'Start Container'}
             message={'Please wait, while container is starting...'}
             visible={startDialogVisible}
+            onHide={() => setStartDialogVisible(false)}
         />
         <BlockingDialog
+            id={'restartContainerDialog'}
             title={'Restart Container'}
             message={'Please wait, while container is restarting...'}
             visible={restartDialogVisible}
+            onHide={() => setRestartDialogVisible(false)}
         />
         <BlockingDialog
+            id={'stopContainerDialog'}
             title={'Stop Container'}
             message={'Please wait, while container is stopping...'}
             visible={stopDialogVisible}
+            onHide={() => setStopDialogVisible(false)}
         />
         {
             !state.loading &&
@@ -106,9 +119,9 @@ const DockerContainerListView = () => {
                         <span>Refresh</span>
                     </Button>
                     <Button onClick={prune}>
-                <span className="material-icons-outlined text-primary">
-                    cleaning_services
-                </span>
+                        <span className="material-icons-outlined text-primary">
+                            cleaning_services
+                        </span>
                         <span>Prune</span>
                     </Button>
                     <Button disabled={selectedItems.length === 0}>

@@ -1,10 +1,11 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, Alert, Button, ListView} from "@core";
+import {Page, Toolbar, ListView} from "@core";
 import {DockerPage} from "./DockerPage";
 import React, {useState} from "react";
 import {VOLUME_LIST} from "@projections/docker-query";
 import {VOLUME_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
+import {Alert, Button} from "@k8s-cloud-io/react-bootstrap";
 
 const DockerVolumeListView = () => {
     const [selectedItems, setSelectedItems] = useState([]);

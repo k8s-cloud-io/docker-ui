@@ -1,6 +1,6 @@
 import { Container, Navbar, PageTitleContextProvider } from '.';
-import { NavLink } from '.';
 import { PageTitle } from './PageTitle';
+import { NavLink } from '@k8s-cloud-io/react-router';
 import React, { PropsWithChildren } from 'react';
 
 export const Page = (props: PropsWithChildren) => {

@@ -12,6 +12,12 @@ export const NETWORK_PRUNE = gql`
     }
 `;
 
+export const NETWORK_CREATE = gql`
+    mutation createNetwork($name: String!, $driver: String!) {
+        createNetwork(name: $name, driver: $driver)
+    }
+`;
+
 export const IMAGE_PRUNE = gql`
     mutation cleanImages {
         cleanImages

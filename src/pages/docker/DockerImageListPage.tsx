@@ -1,5 +1,5 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, Alert, Button, ListView} from "@core";
+import {Page, Toolbar, ListView} from "@core";
 import {DockerPage} from "./DockerPage";
 import React, {useState} from "react";
 import {IMAGE_LIST} from "@projections/docker-query";
@@ -7,6 +7,7 @@ import {IMAGE_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {ImageListDetails} from "./partials/ImageListDetails";
 import {bytesToSize} from "@core/utils";
+import {Alert, Button} from "@k8s-cloud-io/react-bootstrap";
 
 const DockerImageListView = () => {
     const [selectedItems, setSelectedItems] = useState([]);

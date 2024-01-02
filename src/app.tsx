@@ -3,12 +3,13 @@ import { createRoot } from "react-dom/client";
 
 import "../src/resources/scss/app.scss";
 import {DockerContainerListPage, DockerImageListPage, DockerNetworkListPage, DockerVolumeListPage} from "./pages/docker";
-import {BrowserRouter, Page, Route} from "@core";
+import {BrowserRouter, Route} from "@k8s-cloud-io/react-router";
 import {
     CacheInterface,
     GraphQLClient,
     GraphQLProvider
 } from "@k8s-cloud-io/react-graphql";
+import {Page} from "@core";
 
 const Home = () => {
     return <Page>

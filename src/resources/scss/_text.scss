@@ -10,3 +10,15 @@
     text-decoration: underline;
   }
 }
+
+.form-control:focus {
+  background-color: var(--bs-body-bg);
+  border-color: #8ab2e0;
+  box-shadow: 0 0 0 0.125rem rgba(21,101,192,.15);
+  color: var(--bs-body-color);
+  outline: 0;
+}
+
+.modal.show {
+  display: block;
+}

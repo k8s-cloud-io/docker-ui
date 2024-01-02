@@ -1,5 +1,5 @@
 import React from "react";
-import {NavLink} from "@core";
+import {NavLink} from "@k8s-cloud-io/react-router";
 
 export const DockerNavigation = () => {
     return <ul className="page-navigation">

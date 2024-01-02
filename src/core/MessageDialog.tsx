@@ -1,4 +1,5 @@
-import { Alert, Button, Modal } from '.';
+import { Modal } from '.';
+import { Alert, Button } from '@k8s-cloud-io/react-bootstrap';
 import React from 'react';
 
 type MessageDialogProps = {
@@ -24,19 +25,17 @@ export const MessageDialog = (props: MessageDialogProps) => {
     }
     return (
         <Modal show={props.visible} onHide={props.onHide}>
-            <Modal.Dialog>
-                <Modal.Header closeButton>
-                    <Modal.Title>{title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Alert type={props.type}>{props.message}</Alert>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className={'btn-primary'} data-bs-dismiss={'modal'}>
-                        OK
-                    </Button>
-                </Modal.Footer>
-            </Modal.Dialog>
+            <Modal.Header closeButton>
+                <Modal.Title>{title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Alert type={props.type}>{props.message}</Alert>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className={'btn-primary'} data-bs-dismiss={'modal'}>
+                    OK
+                </Button>
+            </Modal.Footer>
         </Modal>
     );
 };

@@ -1,8 +1,4 @@
 import {
-    AnyComponent,
-    createElement,
-    FunctionalComponent,
-    RenderableProps,
     ComponentChild,
     ComponentChildren
 } from 'preact'

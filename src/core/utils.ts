@@ -8,13 +8,13 @@ export const uniqueId = () => {
 };
 
 export const bytesToSize = (byteVal: number) => {
-    const units=["Bytes", "KB", "MB", "GB", "TB"];
-    let counter=0;
-    const kb= 1024;
-    let div= byteVal;
-    while(div >= kb){
+    const units = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    let counter = 0;
+    const kb = 1024;
+    let div = byteVal;
+    while (div >= kb) {
         counter++;
-        div= div/kb;
+        div = div / kb;
     }
-    return div.toFixed(1) + " " + units[counter];
-}
+    return div.toFixed(1) + ' ' + units[counter];
+};
