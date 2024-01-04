@@ -1,10 +1,10 @@
-import {Alert, OffCanvas} from "@k8s-cloud-io/react-bootstrap";
 import React, { useEffect, useState} from "react";
 import {ContainerListDetailsProps, LoadingProps} from "./props";
 import {useGraphQLClient} from "@k8s-cloud-io/react-graphql";
 import {CONTAINER_DETAILS} from "@projections/docker-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import {Alert, Offcanvas} from "react-bootstrap";
 
 dayjs.extend(relativeTime);
 export const ContainerListDetails = (props: ContainerListDetailsProps) => {
@@ -46,20 +46,24 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
         }
     }, []);
 
-    return <OffCanvas direction={'end'} show={props.visible} onHide={props.onHide}>
-        <OffCanvas.Header closeButton>
-            <OffCanvas.Title>{containerName}</OffCanvas.Title>
-        </OffCanvas.Header>
-        <OffCanvas.Body>
+    const closeCanvas = () => {
+        props.onHide();
+    }
+
+    return <Offcanvas placement={'end'} show={props.visible} onHide={closeCanvas}>
+        <Offcanvas.Header closeButton>
+            <Offcanvas.Title>{containerName}</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
             {
                 state.loading &&
-                <Alert type={'info'}>
+                <Alert variant={'info'}>
                     Please wait, while loading...
                 </Alert>
             }
             {
                 state.error &&
-                <Alert type={'danger'}>
+                <Alert variant={'danger'}>
                     {state.error}
                 </Alert>
             }
@@ -148,6 +152,6 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
                     }
                 </>
             }
-        </OffCanvas.Body>
-    </OffCanvas>
+        </Offcanvas.Body>
+    </Offcanvas>
 }

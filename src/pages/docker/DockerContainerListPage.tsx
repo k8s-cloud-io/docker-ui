@@ -1,15 +1,24 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, ListView, BlockingDialog} from "@core";
+import {Page, Toolbar, ListView, BlockingDialog, Button} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, { useState} from "react";
+import React, {createRef, forwardRef, RefObject, useRef, useState} from "react";
 import {CONTAINER_LIST} from "@projections/docker-query";
 import {CONTAINER_PRUNE, CONTAINER_RESTART, CONTAINER_START, CONTAINER_STOP} from "@projections/docker-mutation";
 import dayjs from "dayjs";
-import {Alert, Button, Dropdown} from "@k8s-cloud-io/react-bootstrap";
 import {ContainerListDetails} from "./partials/ContainerListDetails";
-import {Modal as BSModal} from "bootstrap";
+import {Alert, Dropdown} from "react-bootstrap";
+
+const ActionToggle = forwardRef((props: any, ref: any) => {
+    return <span ref={ref} className={'material-icons-outlined cursor-pointer'} onClick={(e) => {
+        e.preventDefault();
+        props.onClick(e);
+    }}>
+        more_vert
+    </span>
+});
 
 const DockerContainerListView = () => {
+    const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [detailsVisible, setDetailsVisible] = useState(false);
     const [selectedContainer, setSelectedContainer] = useState(null)
@@ -21,25 +30,19 @@ const DockerContainerListView = () => {
     })
 
     const refresh = () => {
+        if( listRef.current )
+            listRef.current.unSelect();
+
         setStartDialogVisible(false);
         setRestartDialogVisible(false);
         setStopDialogVisible(false);
-        setTimeout(() => {
-            ['startContainerDialog', 'restartContainerDialog', 'stopContainerDialog'].forEach((dialog) => {
-                const e = document.querySelector(`#${dialog}`);
-                if( e != undefined ) {
-                    BSModal.getOrCreateInstance(e).hide();
-                }
-            })
-            state.refresh();
-        }, 250)
+        state.refresh();
     }
 
     const prune = () => {
         state.client.mutate({
             mutation: CONTAINER_PRUNE
         }).then(() => {
-            setSelectedItems([]);
             refresh();
         });
     }
@@ -81,13 +84,13 @@ const DockerContainerListView = () => {
     }
 
     if( state.error ) {
-        return <Alert type={'danger'}>{state.error.message}</Alert>
+        return <Alert variant={'danger'}>{state.error.message}</Alert>
     }
 
     return <>
         {
             state.loading &&
-            <Alert type={'info'}>Please wait, while loading...</Alert>
+            <Alert variant={'info'}>Please wait, while loading...</Alert>
         }
         <BlockingDialog
             id={'startContainerDialog'}
@@ -130,6 +133,7 @@ const DockerContainerListView = () => {
                     </Button>
                 </Toolbar>
                 <ListView
+                    ref={listRef}
                     onSelectionChange={(items) => setSelectedItems(items)}
                     headers={[
                         'name', 'image', 'ip address', 'ports', 'state', 'created at', ''
@@ -183,9 +187,7 @@ const DockerContainerListView = () => {
                         },
                         action: (value: any) => {
                             return <Dropdown>
-                                <span data-bs-toggle={"dropdown"} className={'material-icons-outlined cursor-pointer'}>
-                                    more_vert
-                                </span>
+                                <Dropdown.Toggle as={ActionToggle}/>
                                 <Dropdown.Menu>
                                     {
                                         value.state !== 'running' &&

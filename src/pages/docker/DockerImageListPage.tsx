@@ -1,15 +1,16 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, ListView} from "@core";
+import {Page, Toolbar, ListView, Button} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {useState} from "react";
+import React, {createRef, RefObject, useRef, useState} from "react";
 import {IMAGE_LIST} from "@projections/docker-query";
 import {IMAGE_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {ImageListDetails} from "./partials/ImageListDetails";
 import {bytesToSize} from "@core/utils";
-import {Alert, Button} from "@k8s-cloud-io/react-bootstrap";
+import {Alert} from "react-bootstrap";
 
 const DockerImageListView = () => {
+    const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [detailsVisible, setDetailsVisible] = useState(null);
@@ -21,17 +22,17 @@ const DockerImageListView = () => {
         state.client.mutate({
             mutation: IMAGE_PRUNE
         }).then(() => {
-            setSelectedItems([]);
+            listRef.current.unSelect();
             state.refresh();
         });
     }
 
     if( state.loading ) {
-        return <Alert type={'info'}>Please wait, while loading...</Alert>;
+        return <Alert variant={'info'}>Please wait, while loading...</Alert>;
     }
 
     if( state.error ) {
-        return <Alert type={'danger'}>{state.error.message}</Alert>
+        return <Alert variant={'danger'}>{state.error.message}</Alert>
     }
 
     return <>
@@ -52,6 +53,7 @@ const DockerImageListView = () => {
             </Button>
         </Toolbar>
         <ListView
+            ref={listRef}
             onSelectionChange={(items) => setSelectedItems(items)}
             headers={[
                 'name', 'version', 'size', 'created at'

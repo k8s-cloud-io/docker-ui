@@ -46,6 +46,7 @@ export const IMAGE_DETAILS = gql`
 export const NETWORK_LIST = gql`
     query networks {
         networks {
+            id
             name
             created
             scope

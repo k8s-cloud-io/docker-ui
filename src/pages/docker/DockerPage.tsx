@@ -1,6 +1,5 @@
 import React, {PropsWithChildren} from "react";
-import {usePageTitle} from "@core";
-import {Container} from "@k8s-cloud-io/react-bootstrap";
+import {Container, usePageTitle} from "@core";
 import {DockerNavigation} from ".";
 
 export const DockerPage = (props: PropsWithChildren & {pageTitle: string}) => {

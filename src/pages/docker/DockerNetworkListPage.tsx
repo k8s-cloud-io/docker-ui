@@ -1,18 +1,20 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, ListView, BlockingDialog} from "@core";
+import {BlockingDialog, Button, ErrorDialog, ListView, Page, Toolbar, TextInput} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {useRef, useState} from "react";
+import React, {createRef, RefObject, useRef, useState} from "react";
 import {NETWORK_LIST} from "@projections/docker-query";
-import {NETWORK_CREATE, NETWORK_PRUNE} from "@projections/docker-mutation";
+import {NETWORK_CREATE, NETWORK_PRUNE, NETWORK_DELETE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
-import {Alert, Button, TextInput, Modal} from "@k8s-cloud-io/react-bootstrap";
-import {Modal as BSModal} from "bootstrap";
+import {Alert, Modal} from "react-bootstrap";
 
 const DockerNetworkListView = () => {
-    const networkNameRef: any = useRef();
+    const networkNameRef: RefObject<any> = createRef();
+    const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [createDialogVisible, setCreateDialogVisible] = useState(false);
     const [pruneDialogVisible, setPruneDialogVisible] = useState(false);
+    const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [networkNameError, setNetworkNameError] = useState(null);
     const state = useQuery({
         query: NETWORK_LIST
@@ -23,10 +25,27 @@ const DockerNetworkListView = () => {
         state.client.mutate({
             mutation: NETWORK_PRUNE
         }).then(() => {
-            setSelectedItems([]);
-            const element = document.querySelector('#pruneDialog');
-            BSModal.getOrCreateInstance(element).hide();
+            setPruneDialogVisible(false);
+            listRef.current.unSelect();
             state.refresh();
+        });
+    }
+
+    const deleteNetworks = () => {
+        state.client.mutate({
+            mutation: NETWORK_DELETE,
+            variables: {
+                networks: selectedItems.map(item => item.id)
+            }
+        }).then(() => {
+            setSelectedItems([]);
+            setDeleteDialogVisible(false)
+            state.refresh();
+        }).catch(e => {
+            listRef.current.unSelect();
+            setDeleteDialogVisible(false)
+            setErrorMessage(e.extensions['debugMessage'] || e.message);
+
         });
     }
 
@@ -46,19 +65,17 @@ const DockerNetworkListView = () => {
             }
         }).then(() => {
             setSelectedItems([]);
-            //setCreateDialogVisible(false);
-            const element = document.querySelector('#createModal');
-            BSModal.getOrCreateInstance(element).hide();
+            setCreateDialogVisible(false);
             state.refresh();
         });
     }
 
     if( state.loading ) {
-        return <Alert type={'info'}>Please wait, while loading...</Alert>;
+        return <Alert variant={'info'}>Please wait, while loading...</Alert>;
     }
 
     if( state.error ) {
-        return <Alert type={'danger'}>{state.error.message}</Alert>
+        return <Alert variant={'danger'}>{state.error.message}</Alert>
     }
 
     return <>
@@ -73,7 +90,7 @@ const DockerNetworkListView = () => {
                 </span>
                 <span>Prune</span>
             </Button>
-            <Button disabled={selectedItems.length === 0}>
+            <Button disabled={selectedItems.length === 0} onClick={() => setDeleteDialogVisible(true)}>
                 <span className={'material-icons-outlined text-danger'}>delete</span>
                 <span className={'text-danger'}>Delete</span>
             </Button>
@@ -89,7 +106,7 @@ const DockerNetworkListView = () => {
                 <span>Add Network</span>
             </Button>
         </Toolbar>
-        <Modal id={'createModal'} show={createDialogVisible} onHide={() => {
+        <Modal show={createDialogVisible} onHide={() => {
             setCreateDialogVisible(false)
         }}>
             <Modal.Header closeButton>
@@ -98,7 +115,7 @@ const DockerNetworkListView = () => {
             <Modal.Body>
                 {
                     networkNameError &&
-                    <Alert type={'danger'}>{networkNameError}</Alert>
+                    <Alert variant={'danger'}>{networkNameError}</Alert>
                 }
                 <div className={'row align-items-center'}>
                     <label className={'form-label fw-400 col-2 m-0'}>Name</label>
@@ -110,9 +127,7 @@ const DockerNetworkListView = () => {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={() => {
-                    setCreateDialogVisible(false)
-                }}>Cancel</Button>
+                <Button data-bs-dismiss={'modal'}>Cancel</Button>
                 <Button className={'btn-primary'} onClick={createNetwork}>Create</Button>
             </Modal.Footer>
         </Modal>
@@ -122,7 +137,21 @@ const DockerNetworkListView = () => {
             visible={pruneDialogVisible}
             id={'pruneDialog'}
         />
+        <Modal show={deleteDialogVisible} id={'deleteDialog'} onHide={() => setDeleteDialogVisible(false)}>
+            <Modal.Header closeButton>
+                <Modal.Title>Delete Networks</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                Do you really want to delete the selected networks?
+            </Modal.Body>
+            <Modal.Footer>
+                <Button data-bs-dismiss={'modal'}>Cancel</Button>
+                <Button className={'btn-danger'} onClick={deleteNetworks}>Delete</Button>
+            </Modal.Footer>
+        </Modal>
+        <ErrorDialog message={errorMessage} visible={errorMessage !== null} onHide={() => setErrorMessage(null)}/>
         <ListView
+            ref={listRef}
             onSelectionChange={(items) => setSelectedItems(items)}
             headers={[
                 'name', 'driver', 'scope', 'subnet', 'created at'

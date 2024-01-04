@@ -49,7 +49,7 @@ body {
   @extend .rounded-1;
   @extend .shadow-sm;
 
-  li {
+  .dropdown-item {
     @extend .cursor-pointer;
     @extend .fs-6;
     @extend .flex;

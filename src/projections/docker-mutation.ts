@@ -18,6 +18,12 @@ export const NETWORK_CREATE = gql`
     }
 `;
 
+export const NETWORK_DELETE = gql`
+    mutation removeNetworks($networks: [String!]!) {
+        removeNetworks(networks: $networks)
+    }
+`;
+
 export const IMAGE_PRUNE = gql`
     mutation cleanImages {
         cleanImages

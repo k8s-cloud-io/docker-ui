@@ -1,6 +1,5 @@
-import { Modal } from '.';
-import { Alert, Button } from '@k8s-cloud-io/react-bootstrap';
 import React from 'react';
+import {Alert, Button, Modal} from "react-bootstrap";
 
 type MessageDialogProps = {
     message: string;
@@ -29,7 +28,7 @@ export const MessageDialog = (props: MessageDialogProps) => {
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Alert type={props.type}>{props.message}</Alert>
+                <Alert variant={props.type}>{props.message}</Alert>
             </Modal.Body>
             <Modal.Footer>
                 <Button className={'btn-primary'} data-bs-dismiss={'modal'}>

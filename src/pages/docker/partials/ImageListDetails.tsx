@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {Alert, OffCanvas} from "@k8s-cloud-io/react-bootstrap";
 import {ImageDetailsProps, LoadingProps} from "./props";
 import {useGraphQLClient} from "@k8s-cloud-io/react-graphql";
 import {IMAGE_DETAILS} from "@projections/docker-query";
 import dayjs from "dayjs";
 import {bytesToSize} from "@core/utils";
+import {Alert, Offcanvas} from "react-bootstrap";
 
 export const ImageListDetails = (props: ImageDetailsProps) => {
     if( !props.id ) return null;
@@ -44,20 +44,24 @@ export const ImageListDetails = (props: ImageDetailsProps) => {
         }
     }, []);
 
-    return <OffCanvas direction={'end'} show={props.visible} onHide={props.onHide}>
-        <OffCanvas.Header closeButton>
-            <OffCanvas.Title>{props.name} ({props.version})</OffCanvas.Title>
-        </OffCanvas.Header>
-        <OffCanvas.Body>
+    const closeCanvas = () => {
+        props.onHide();
+    }
+
+    return <Offcanvas placement={'end'} show={props.visible} onHide={closeCanvas}>
+        <Offcanvas.Header closeButton>
+            <Offcanvas.Title>{props.name} ({props.version})</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
             {
                 state.loading &&
-                <Alert type={'info'}>
+                <Alert variant={'info'}>
                     Please wait, while loading...
                 </Alert>
             }
             {
                 state.error &&
-                <Alert type={'danger'}>
+                <Alert variant={'danger'}>
                     {state.error}
                 </Alert>
             }
@@ -165,6 +169,6 @@ export const ImageListDetails = (props: ImageDetailsProps) => {
                     }
                 </>
             }
-        </OffCanvas.Body>
-    </OffCanvas>
+        </Offcanvas.Body>
+    </Offcanvas>
 }
