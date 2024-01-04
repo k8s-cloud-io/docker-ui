@@ -13,6 +13,7 @@
     "lib": [
       "dom"
     ],
+    "sourceMap": false,
     "paths": {
       "@core": ["src/core/index.tsx"],
       "@core/": ["src/core/"],

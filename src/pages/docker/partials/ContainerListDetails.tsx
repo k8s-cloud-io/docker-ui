@@ -47,7 +47,7 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
     }, []);
 
     const closeCanvas = () => {
-        props.onHide();
+        props.onHide()
     }
 
     return <Offcanvas placement={'end'} show={props.visible} onHide={closeCanvas}>

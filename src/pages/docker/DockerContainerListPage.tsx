@@ -83,6 +83,20 @@ const DockerContainerListView = () => {
         });
     }
 
+    const openDetails = (value: any) => {
+        setDetailsVisible(() => {
+            setSelectedContainer(value);
+            return true;
+        });
+    }
+
+    const hideDetails = () => {
+        setSelectedContainer(() => {
+            setDetailsVisible(false);
+            return null;
+        });
+    }
+
     if( state.error ) {
         return <Alert variant={'danger'}>{state.error.message}</Alert>
     }
@@ -143,12 +157,7 @@ const DockerContainerListView = () => {
                             let name = value['names'][0];
                             if( name.startsWith('/'))
                                 name = name.substring(1);
-                            return <span className={'link-primary'} onClick={() => {
-                                setDetailsVisible(() => {
-                                    setSelectedContainer(value);
-                                    return true;
-                                });
-                            }}>{name}</span>;
+                            return <span className={'link-primary'} onClick={() => openDetails(value)}>{name}</span>;
                         },
                         image: (value: any) => {
                             let image = value['image'];
@@ -230,15 +239,7 @@ const DockerContainerListView = () => {
                     checkable
                     items={state.data['containers']}
                 />
-                {
-                    detailsVisible &&
-                    <ContainerListDetails visible={true} data={selectedContainer} onHide={() => {
-                        setDetailsVisible(() => {
-                            setSelectedContainer(null);
-                            return false;
-                        })
-                    }}/>
-                }
+                <ContainerListDetails visible={detailsVisible} data={selectedContainer} onHide={hideDetails}/>
             </>
         }
     </>

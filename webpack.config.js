@@ -12,6 +12,7 @@ const buildFrontend = (_, config) => {
     return {
         mode: config.mode,
         target: 'web',
+        devtool: false,
         entry: {
             app: './src/app.tsx',
         },
