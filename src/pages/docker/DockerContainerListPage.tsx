@@ -1,7 +1,7 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
 import {Page, Toolbar, ListView, BlockingDialog, Button} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {createRef, forwardRef, RefObject, useRef, useState} from "react";
+import React, {createRef, forwardRef, RefObject, useEffect, useRef, useState} from "react";
 import {CONTAINER_LIST} from "@projections/docker-query";
 import {CONTAINER_PRUNE, CONTAINER_RESTART, CONTAINER_START, CONTAINER_STOP} from "@projections/docker-mutation";
 import dayjs from "dayjs";
@@ -84,17 +84,13 @@ const DockerContainerListView = () => {
     }
 
     const openDetails = (value: any) => {
-        setDetailsVisible(() => {
-            setSelectedContainer(value);
-            return true;
-        });
+        setSelectedContainer(value);
+        setDetailsVisible(true);
     }
 
     const hideDetails = () => {
-        setSelectedContainer(() => {
-            setDetailsVisible(false);
-            return null;
-        });
+        setSelectedContainer(null);
+        setDetailsVisible(false);
     }
 
     if( state.error ) {
@@ -157,7 +153,7 @@ const DockerContainerListView = () => {
                             let name = value['names'][0];
                             if( name.startsWith('/'))
                                 name = name.substring(1);
-                            return <span className={'link-primary'} onClick={() => openDetails(value)}>{name}</span>;
+                            return <span className={'link-primary'} onClick={() => openDetails(name)}>{name}</span>;
                         },
                         image: (value: any) => {
                             let image = value['image'];

@@ -13,7 +13,7 @@ const DockerImageListView = () => {
     const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [detailsVisible, setDetailsVisible] = useState(null);
+    const [detailsVisible, setDetailsVisible] = useState(false);
     const state = useQuery({
         query: IMAGE_LIST
     })
@@ -25,6 +25,11 @@ const DockerImageListView = () => {
             listRef.current.unSelect();
             state.refresh();
         });
+    }
+
+    const hideDetails = () => {
+        setSelectedImage(null);
+        setDetailsVisible(false)
     }
 
     if( state.loading ) {
@@ -88,19 +93,13 @@ const DockerImageListView = () => {
             checkable
             items={state.data['images']}
         />
-        {
-            detailsVisible &&
-            <ImageListDetails
-                id={selectedImage?.id}
-                name={selectedImage?.name}
-                version={selectedImage?.version}
-                visible={true}
-                onHide={() => {
-                    setSelectedImage(null);
-                    setDetailsVisible(false)
-                }}
-            />
-        }
+        <ImageListDetails
+            id={selectedImage?.id}
+            name={selectedImage?.name}
+            version={selectedImage?.version}
+            visible={detailsVisible}
+            onHide={hideDetails}
+        />
     </>
 }
 

@@ -8,8 +8,7 @@ import {Alert, Offcanvas} from "react-bootstrap";
 
 dayjs.extend(relativeTime);
 export const ContainerListDetails = (props: ContainerListDetailsProps) => {
-    const containerName = props.data ? props.data['names'][0].substring(1) : null;
-    if( !containerName ) return null;
+    const containerName = props.data;
 
     const client = useGraphQLClient();
     const [state, setState ] = useState<LoadingProps>({
@@ -20,7 +19,7 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
     });
 
     useEffect(() => {
-        if( !state.loaded ) {
+        if( containerName) {
             client.query({
                 query: CONTAINER_DETAILS,
                 variables: {
@@ -44,7 +43,7 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
                     })
                 })
         }
-    }, []);
+    }, [containerName]);
 
     const closeCanvas = () => {
         props.onHide()

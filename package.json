@@ -37,7 +37,7 @@
   "dependencies": {
     "@fontsource/roboto": "^5.0.8",
     "@k8s-cloud-io/react-bootstrap": "^1.0.61",
-    "@k8s-cloud-io/react-graphql": "^1.0.41",
+    "@k8s-cloud-io/react-graphql": "^1.0.42",
     "@k8s-cloud-io/react-router": "^1.0.139",
     "@types/isomorphic-fetch": "^0.0.39",
     "isomorphic-fetch": "^3.0.0",

@@ -7,8 +7,6 @@ import {bytesToSize} from "@core/utils";
 import {Alert, Offcanvas} from "react-bootstrap";
 
 export const ImageListDetails = (props: ImageDetailsProps) => {
-    if( !props.id ) return null;
-
     const client = useGraphQLClient();
     const [state, setState ] = useState<LoadingProps>({
         loaded: false,
@@ -18,7 +16,7 @@ export const ImageListDetails = (props: ImageDetailsProps) => {
     });
 
     useEffect(() => {
-        if( !state.loaded ) {
+        if( props.id ) {
             client.query({
                 query: IMAGE_DETAILS,
                 variables: {
@@ -42,16 +40,19 @@ export const ImageListDetails = (props: ImageDetailsProps) => {
                     })
                 })
         }
-    }, []);
+    }, [props.id]);
 
     const closeCanvas = () => {
         props.onHide();
     }
 
     return <Offcanvas placement={'end'} show={props.visible} onHide={closeCanvas}>
-        <Offcanvas.Header closeButton>
-            <Offcanvas.Title>{props.name} ({props.version})</Offcanvas.Title>
-        </Offcanvas.Header>
+        {
+            props.name &&
+            <Offcanvas.Header closeButton>
+                <Offcanvas.Title>{props.name} ({props.version})</Offcanvas.Title>
+            </Offcanvas.Header>
+        }
         <Offcanvas.Body>
             {
                 state.loading &&
