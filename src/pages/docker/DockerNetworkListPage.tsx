@@ -31,19 +31,25 @@ const DockerNetworkListView = () => {
     }
 
     const deleteNetworks = () => {
+        setDeleteDialogVisible(false)
+        setPruneDialogVisible(true)
         state.client.mutate({
             mutation: NETWORK_DELETE,
             variables: {
                 networks: selectedItems.map(item => item.id)
             }
         }).then(() => {
-            setDeleteDialogVisible(false)
+            setPruneDialogVisible(false)
             state.refresh();
         }).catch(e => {
-            setDeleteDialogVisible(false)
+            setPruneDialogVisible(false)
             setErrorMessage(e.extensions['debugMessage'] || e.message);
-
+            state.refresh();
         });
+    }
+
+    const hideCreateNetworkDialog = () => {
+        setCreateDialogVisible(false)
     }
 
     const createNetwork = () => {
@@ -61,7 +67,7 @@ const DockerNetworkListView = () => {
                 driver: "bridge"
             }
         }).then(() => {
-            setCreateDialogVisible(false);
+            hideCreateNetworkDialog();
             state.refresh();
         });
     }
@@ -108,9 +114,7 @@ const DockerNetworkListView = () => {
                 <span>Add Network</span>
             </Button>
         </Toolbar>
-        <Modal show={createDialogVisible} onHide={() => {
-            setCreateDialogVisible(false)
-        }}>
+        <Modal show={createDialogVisible} onHide={hideCreateNetworkDialog}>
             <Modal.Header closeButton>
                 <Modal.Title>Create Network</Modal.Title>
             </Modal.Header>
@@ -129,7 +133,7 @@ const DockerNetworkListView = () => {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button data-bs-dismiss={'modal'}>Cancel</Button>
+                <Button onClick={hideCreateNetworkDialog}>Cancel</Button>
                 <Button className={'btn-primary'} onClick={createNetwork}>Create</Button>
             </Modal.Footer>
         </Modal>
