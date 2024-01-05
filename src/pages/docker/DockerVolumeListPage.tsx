@@ -1,15 +1,18 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, ListView, Button} from "@core";
+import {Page, Toolbar, ListView, Button, ErrorDialog, BlockingDialog} from "@core";
 import {DockerPage} from "./DockerPage";
 import React, {createRef, RefObject, useEffect, useRef, useState} from "react";
 import {VOLUME_LIST} from "@projections/docker-query";
-import {VOLUME_PRUNE} from "@projections/docker-mutation";
+import {VOLUME_DELETE, VOLUME_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
-import {Alert} from "react-bootstrap";
+import {Alert, Modal, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
 
 const DockerVolumeListView = () => {
     const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [blockingDialogVisible, setBlockingDialogVisible] = useState(false);
+    const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const state = useQuery({
         query: VOLUME_LIST
     })
@@ -21,6 +24,38 @@ const DockerVolumeListView = () => {
             listRef.current.unSelect();
             state.refresh();
         });
+    }
+
+    const deleteVolumes = () => {
+        setDeleteDialogVisible(false);
+        setBlockingDialogVisible(true);
+        state.client.mutate({
+            mutation: VOLUME_DELETE,
+            variables: {
+                volumes: selectedItems.map( item => item.name)
+            }
+        })
+            .then(() => {
+                setBlockingDialogVisible(false);
+                state.refresh();
+            })
+            .catch(e => {
+                setBlockingDialogVisible(false);
+                setErrorMessage(e.extensions['debugMessage'] || e.message);
+                state.refresh();
+            });
+    }
+
+    const hideErrorDialog = () => {
+        setErrorMessage(null);
+    }
+
+    const showDeleteDialog = () => {
+        setDeleteDialogVisible(true);
+    }
+
+    const hideDeleteDialog = () => {
+        setDeleteDialogVisible(false);
     }
 
     useEffect(() => {
@@ -49,7 +84,7 @@ const DockerVolumeListView = () => {
                 </span>
                 <span>Prune</span>
             </Button>
-            <Button disabled={selectedItems.length === 0}>
+            <Button disabled={selectedItems.length === 0} onClick={showDeleteDialog}>
                 <span className={'material-icons-outlined text-danger'}>delete</span>
                 <span className={'text-danger'}>Delete</span>
             </Button>
@@ -71,6 +106,25 @@ const DockerVolumeListView = () => {
             checkable
             items={state.data['volumes']}
         />
+        <ErrorDialog message={errorMessage} visible={errorMessage !== null} onHide={hideErrorDialog}/>
+        <BlockingDialog
+            title={'Delete Volumes'}
+            message={'Please wait, while selected volumes are deleted...'}
+            visible={blockingDialogVisible}
+            onHide={() => setBlockingDialogVisible(false)}
+        />
+        <Modal show={deleteDialogVisible} onHide={hideDeleteDialog}>
+            <ModalHeader closeButton>
+                <Modal.Title>Delete Volumes</Modal.Title>
+            </ModalHeader>
+            <ModalBody>
+                Do you really want to delete the selected volumes?
+            </ModalBody>
+            <ModalFooter>
+                <Button onClick={hideDeleteDialog}>Cancel</Button>
+                <Button className={'btn-danger'} onClick={deleteVolumes}>Delete</Button>
+            </ModalFooter>
+        </Modal>
     </>
 }
 

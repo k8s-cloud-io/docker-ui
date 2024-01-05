@@ -36,6 +36,12 @@ export const CONTAINER_DELETE = gql`
     }
 `;
 
+export const VOLUME_DELETE = gql`
+    mutation removeVolumes($volumes: [String!]!) {
+        removeVolumes(volumes: $volumes)
+    }
+`;
+
 export const IMAGE_PRUNE = gql`
     mutation cleanImages {
         cleanImages
