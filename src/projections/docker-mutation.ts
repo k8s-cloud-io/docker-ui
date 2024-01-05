@@ -24,6 +24,12 @@ export const NETWORK_DELETE = gql`
     }
 `;
 
+export const IMAGE_DELETE = gql`
+    mutation removeImages($images: [String!]!) {
+        removeImages(images: $images)
+    }
+`;
+
 export const IMAGE_PRUNE = gql`
     mutation cleanImages {
         cleanImages

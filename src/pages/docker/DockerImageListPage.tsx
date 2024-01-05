@@ -1,19 +1,22 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, ListView, Button} from "@core";
+import {Page, Toolbar, ListView, Button, BlockingDialog, ErrorDialog} from "@core";
 import {DockerPage} from "./DockerPage";
 import React, {createRef, RefObject, useRef, useState} from "react";
 import {IMAGE_LIST} from "@projections/docker-query";
-import {IMAGE_PRUNE} from "@projections/docker-mutation";
+import {IMAGE_DELETE, IMAGE_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {ImageListDetails} from "./partials/ImageListDetails";
 import {bytesToSize} from "@core/utils";
-import {Alert} from "react-bootstrap";
+import {Alert, Modal, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
 
 const DockerImageListView = () => {
     const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [detailsVisible, setDetailsVisible] = useState(false);
+    const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+    const [blockingDialogVisible, setBlockingDialogVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null)
     const state = useQuery({
         query: IMAGE_LIST
     })
@@ -30,6 +33,38 @@ const DockerImageListView = () => {
     const hideDetails = () => {
         setSelectedImage(null);
         setDetailsVisible(false)
+    }
+
+    const hideDeleteDialog = () => {
+        setDeleteDialogVisible(false);
+    }
+
+    const showDeleteDialog = () => {
+        setDeleteDialogVisible(true);
+    }
+
+    const hideErrorDialog = () => {
+        setErrorMessage(null)
+    }
+
+    const deleteImages = () => {
+        setDeleteDialogVisible(false);
+        setBlockingDialogVisible(true);
+        state.client.mutate({
+            mutation: IMAGE_DELETE,
+            variables: {
+                images: selectedItems.map( item => item.id)
+            }
+        })
+        .then(() => {
+            setBlockingDialogVisible(false);
+            state.refresh();
+        })
+        .catch(e => {
+            setBlockingDialogVisible(false);
+            setErrorMessage(e.extensions['debugMessage'] || e.message);
+            state.refresh();
+        });
     }
 
     if( state.loading ) {
@@ -52,7 +87,7 @@ const DockerImageListView = () => {
                 </span>
                 <span>Prune</span>
             </Button>
-            <Button disabled={selectedItems.length === 0}>
+            <Button disabled={selectedItems.length === 0} onClick={showDeleteDialog}>
                 <span className={'material-icons-outlined text-danger'}>delete</span>
                 <span className={'text-danger'}>Delete</span>
             </Button>
@@ -100,6 +135,25 @@ const DockerImageListView = () => {
             visible={detailsVisible}
             onHide={hideDetails}
         />
+        <ErrorDialog message={errorMessage} visible={errorMessage !== null} onHide={hideErrorDialog}/>
+        <BlockingDialog
+            title={'Delete Images'}
+            message={'Please wait, while selected images are deleted...'}
+            visible={blockingDialogVisible}
+            onHide={() => setBlockingDialogVisible(false)}
+        />
+        <Modal show={deleteDialogVisible} onHide={hideDeleteDialog}>
+            <ModalHeader closeButton>
+                <Modal.Title>Delete Images</Modal.Title>
+            </ModalHeader>
+            <ModalBody>
+                Do you really want to delete the selected images?
+            </ModalBody>
+            <ModalFooter>
+                <Button onClick={hideDeleteDialog}>Cancel</Button>
+                <Button className={'btn-danger'} onClick={deleteImages}>Delete</Button>
+            </ModalFooter>
+        </Modal>
     </>
 }
 

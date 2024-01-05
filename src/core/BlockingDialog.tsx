@@ -6,7 +6,7 @@ type BlockingDialogProps = {
     message: string;
     visible: boolean;
     onHide?: () => void;
-    id: string;
+    id?: string;
 };
 
 export const BlockingDialog = (props: BlockingDialogProps) => {
