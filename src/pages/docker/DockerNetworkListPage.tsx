@@ -26,7 +26,7 @@ const DockerNetworkListView = () => {
             mutation: NETWORK_PRUNE
         }).then(() => {
             setPruneDialogVisible(false);
-            listRef.current.unSelect();
+            setSelectedItems([]);
             state.refresh();
         });
     }

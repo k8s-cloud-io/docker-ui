@@ -30,12 +30,11 @@ const DockerContainerListView = () => {
     })
 
     const refresh = () => {
-        if( listRef.current )
-            listRef.current.unSelect();
-
         setStartDialogVisible(false);
         setRestartDialogVisible(false);
         setStopDialogVisible(false);
+        setSelectedItems([]);
+        setSelectedContainer(null);
         state.refresh();
     }
 
