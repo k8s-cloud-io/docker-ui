@@ -102,11 +102,13 @@ const DockerContainerListView = () => {
         })
             .then(() => {
                 setBlockingDialogVisible(false);
+                setSelectedItems([])
                 state.refresh();
             })
             .catch(e => {
                 setBlockingDialogVisible(false);
                 setErrorMessage(e.extensions['debugMessage'] || e.message);
+                setSelectedItems([])
                 state.refresh();
             });
     }
