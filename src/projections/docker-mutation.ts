@@ -30,6 +30,12 @@ export const IMAGE_DELETE = gql`
     }
 `;
 
+export const CONTAINER_DELETE = gql`
+    mutation removeContainers($containers: [String!]!) {
+        removeContainers(containers: $containers)
+    }
+`;
+
 export const IMAGE_PRUNE = gql`
     mutation cleanImages {
         cleanImages
@@ -51,12 +57,6 @@ export const CONTAINER_STOP = gql`
 export const CONTAINER_RESTART = gql`
     mutation restartContainer($id: String!) {
         restartContainer(id: $id)
-    }
-`;
-
-export const CONTAINER_DELETE = gql`
-    mutation deleteContainer($id: String!) {
-        deleteContainer(id: $id)
     }
 `;
 

@@ -1,12 +1,18 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {Page, Toolbar, ListView, BlockingDialog, Button} from "@core";
+import {Page, Toolbar, ListView, BlockingDialog, Button, ErrorDialog} from "@core";
 import {DockerPage} from "./DockerPage";
 import React, {createRef, forwardRef, RefObject, useEffect, useRef, useState} from "react";
 import {CONTAINER_LIST} from "@projections/docker-query";
-import {CONTAINER_PRUNE, CONTAINER_RESTART, CONTAINER_START, CONTAINER_STOP} from "@projections/docker-mutation";
+import {
+    CONTAINER_DELETE,
+    CONTAINER_PRUNE,
+    CONTAINER_RESTART,
+    CONTAINER_START,
+    CONTAINER_STOP
+} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {ContainerListDetails} from "./partials/ContainerListDetails";
-import {Alert, Dropdown} from "react-bootstrap";
+import {Alert, Dropdown, Modal, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
 
 const ActionToggle = forwardRef((props: any, ref: any) => {
     return <span ref={ref} className={'material-icons-outlined cursor-pointer'} onClick={(e) => {
@@ -25,6 +31,9 @@ const DockerContainerListView = () => {
     const [startDialogVisible, setStartDialogVisible] = useState(false);
     const [stopDialogVisible, setStopDialogVisible] = useState(false);
     const [restartDialogVisible, setRestartDialogVisible] = useState(false);
+    const [blockingDialogVisible, setBlockingDialogVisible] = useState(false);
+    const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
     const state = useQuery({
         query: CONTAINER_LIST
     })
@@ -82,6 +91,26 @@ const DockerContainerListView = () => {
         });
     }
 
+    const deleteContainers = () => {
+        hideDeleteDialog();
+        setBlockingDialogVisible(true);
+        state.client.mutate({
+            mutation: CONTAINER_DELETE,
+            variables: {
+                containers: selectedItems.map( item => item.id)
+            }
+        })
+            .then(() => {
+                setBlockingDialogVisible(false);
+                state.refresh();
+            })
+            .catch(e => {
+                setBlockingDialogVisible(false);
+                setErrorMessage(e.extensions['debugMessage'] || e.message);
+                state.refresh();
+            });
+    }
+
     const openDetails = (value: any) => {
         setSelectedContainer(value);
         setDetailsVisible(true);
@@ -90,6 +119,18 @@ const DockerContainerListView = () => {
     const hideDetails = () => {
         setSelectedContainer(null);
         setDetailsVisible(false);
+    }
+
+    const hideErrorDialog = () => {
+        setErrorMessage(null);
+    }
+
+    const hideDeleteDialog = () => {
+        setDeleteDialogVisible(false);
+    }
+
+    const showDeleteDialog = () => {
+        setDeleteDialogVisible(true);
     }
 
     if( state.error ) {
@@ -136,7 +177,7 @@ const DockerContainerListView = () => {
                         </span>
                         <span>Prune</span>
                     </Button>
-                    <Button disabled={selectedItems.length === 0}>
+                    <Button disabled={selectedItems.length === 0} onClick={showDeleteDialog}>
                         <span className={'material-icons-outlined text-danger'}>delete</span>
                         <span className={'text-danger'}>Delete</span>
                     </Button>
@@ -234,6 +275,25 @@ const DockerContainerListView = () => {
                     checkable
                     items={state.data['containers']}
                 />
+                <ErrorDialog message={errorMessage} visible={errorMessage !== null} onHide={hideErrorDialog}/>
+                <BlockingDialog
+                    title={'Delete Containers'}
+                    message={'Please wait, while selected containers are deleted...'}
+                    visible={blockingDialogVisible}
+                    onHide={() => setBlockingDialogVisible(false)}
+                />
+                <Modal show={deleteDialogVisible} onHide={hideDeleteDialog}>
+                    <ModalHeader closeButton>
+                        <Modal.Title>Delete Containers</Modal.Title>
+                    </ModalHeader>
+                    <ModalBody>
+                        Do you really want to delete the selected containers?
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={hideDeleteDialog}>Cancel</Button>
+                        <Button className={'btn-danger'} onClick={deleteContainers}>Delete</Button>
+                    </ModalFooter>
+                </Modal>
                 <ContainerListDetails visible={detailsVisible} data={selectedContainer} onHide={hideDetails}/>
             </>
         }
