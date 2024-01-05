@@ -1,7 +1,7 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
 import {BlockingDialog, Button, ErrorDialog, ListView, Page, Toolbar, TextInput} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {createRef, RefObject, useRef, useState} from "react";
+import React, {createRef, RefObject, useEffect, useRef, useState} from "react";
 import {NETWORK_LIST} from "@projections/docker-query";
 import {NETWORK_CREATE, NETWORK_PRUNE, NETWORK_DELETE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
@@ -26,7 +26,6 @@ const DockerNetworkListView = () => {
             mutation: NETWORK_PRUNE
         }).then(() => {
             setPruneDialogVisible(false);
-            setSelectedItems([]);
             state.refresh();
         });
     }
@@ -38,11 +37,9 @@ const DockerNetworkListView = () => {
                 networks: selectedItems.map(item => item.id)
             }
         }).then(() => {
-            setSelectedItems([]);
             setDeleteDialogVisible(false)
             state.refresh();
         }).catch(e => {
-            listRef.current.unSelect();
             setDeleteDialogVisible(false)
             setErrorMessage(e.extensions['debugMessage'] || e.message);
 
@@ -64,11 +61,16 @@ const DockerNetworkListView = () => {
                 driver: "bridge"
             }
         }).then(() => {
-            setSelectedItems([]);
             setCreateDialogVisible(false);
             state.refresh();
         });
     }
+
+    useEffect(() => {
+        if( selectedItems.length && !state.loaded ) {
+            setSelectedItems([]);
+        }
+    }, [state.loaded]);
 
     if( state.loading ) {
         return <Alert variant={'info'}>Please wait, while loading...</Alert>;

@@ -1,7 +1,7 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
 import {Page, Toolbar, ListView, Button, BlockingDialog, ErrorDialog} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {createRef, RefObject, useRef, useState} from "react";
+import React, {createRef, RefObject, useEffect, useRef, useState} from "react";
 import {IMAGE_LIST} from "@projections/docker-query";
 import {IMAGE_DELETE, IMAGE_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
@@ -47,6 +47,11 @@ const DockerImageListView = () => {
         setErrorMessage(null)
     }
 
+    useEffect(() => {
+        if( selectedItems.length && !state.loaded ) {
+            setSelectedItems([]);
+        }
+    }, [state.loaded]);
     const deleteImages = () => {
         setDeleteDialogVisible(false);
         setBlockingDialogVisible(true);
@@ -58,13 +63,11 @@ const DockerImageListView = () => {
         })
         .then(() => {
             setBlockingDialogVisible(false);
-            setSelectedItems([])
             state.refresh();
         })
         .catch(e => {
             setBlockingDialogVisible(false);
             setErrorMessage(e.extensions['debugMessage'] || e.message);
-            setSelectedItems([])
             state.refresh();
         });
     }

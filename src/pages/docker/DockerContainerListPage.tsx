@@ -44,6 +44,7 @@ const DockerContainerListView = () => {
         setStopDialogVisible(false);
         setSelectedItems([]);
         setSelectedContainer(null);
+        setBlockingDialogVisible(false);
         state.refresh();
     }
 
@@ -91,6 +92,12 @@ const DockerContainerListView = () => {
         });
     }
 
+    useEffect(() => {
+        if( selectedItems.length && !state.loaded ) {
+            setSelectedItems([]);
+        }
+    }, [state.loaded]);
+
     const deleteContainers = () => {
         hideDeleteDialog();
         setBlockingDialogVisible(true);
@@ -101,15 +108,11 @@ const DockerContainerListView = () => {
             }
         })
             .then(() => {
-                setBlockingDialogVisible(false);
-                setSelectedItems([])
-                state.refresh();
+                refresh()
             })
             .catch(e => {
-                setBlockingDialogVisible(false);
                 setErrorMessage(e.extensions['debugMessage'] || e.message);
-                setSelectedItems([])
-                state.refresh();
+                refresh();
             });
     }
 

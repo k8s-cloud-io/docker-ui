@@ -1,7 +1,7 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
 import {Page, Toolbar, ListView, Button} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {createRef, RefObject, useRef, useState} from "react";
+import React, {createRef, RefObject, useEffect, useRef, useState} from "react";
 import {VOLUME_LIST} from "@projections/docker-query";
 import {VOLUME_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
@@ -22,6 +22,12 @@ const DockerVolumeListView = () => {
             state.refresh();
         });
     }
+
+    useEffect(() => {
+        if( selectedItems.length && !state.loaded ) {
+            setSelectedItems([]);
+        }
+    }, [state.loaded]);
 
     if( state.loading ) {
         return <Alert variant={'info'}>Please wait, while loading...</Alert>;
