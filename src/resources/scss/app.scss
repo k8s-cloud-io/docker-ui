@@ -91,6 +91,8 @@ body {
       @extend .h5;
       @extend .m-0;
       @extend .fw-400;
+      @extend .flex;
+      @extend .align-items-center;
       border-bottom: 1px solid var(--bs-border-color);
     }
 
