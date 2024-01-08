@@ -4,7 +4,7 @@ import {NavLink} from "@k8s-cloud-io/react-router";
 export const DockerNavigation = () => {
     return <ul className="page-navigation">
         <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink exact to="/">Home</NavLink>
         </li>
         <li>
             <NavLink to="/docker/images">Images</NavLink>
