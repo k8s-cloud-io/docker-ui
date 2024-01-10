@@ -39,6 +39,13 @@ const buildFrontend = (_, config) => {
                         filename: 'fonts/[name][ext]'
                     }
                 },
+                {
+                    test: /\.svg$/i,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'images/[name][ext]'
+                    }
+                },
             ],
         },
         resolve: {
