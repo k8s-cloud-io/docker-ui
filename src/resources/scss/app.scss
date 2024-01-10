@@ -169,11 +169,22 @@ body {
   }
 }
 
-.form-check.form-switch {
+.form-switch {
   input[type=checkbox] {
     @extend .me-2;
-    height: 14px;
-    width: 26px;
+    box-shadow: none;
+    height: 15px;
+    width: 30px;
+
+    &:not(:checked):focus {
+      border-color: #ccc;
+      --bs-form-switch-bg: url("../images/switch-bg.svg");
+    }
+
+    &:checked {
+      @extend .bg-success;
+      @extend .border-success;
+    }
   }
 }
 
@@ -303,10 +314,23 @@ input[type=text],
 input[type=password],
 select {
   @extend .fs-6;
+  @extend .rounded-1;
 }
 
 select {
   @extend .form-control;
   @extend .form-control-sm;
   @extend .form-select;
+}
+
+.collapse-toggle {
+  @extend .form-select;
+  @extend .w-100;
+  @extend .position-relative;
+  @extend .fs-6;
+  @extend .p-2;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  text-align: left;
 }
