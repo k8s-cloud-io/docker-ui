@@ -1,5 +1,6 @@
 $info: #A0D5EE;
-$primary: #1565c0;
+// $primary: #1565c0;
+$primary: #3F51B5;
 $success: #479a63;
 $danger: #f44336;
 $warning: #d89a39;
@@ -15,6 +16,16 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+.w-10 {
+  width: 10% !important;
+}
+.w-15 {
+  width: 15% !important;
+}
+.w-20 {
+  width: 20% !important;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -24,8 +35,6 @@ body {
 }
 
 .alert {
-  @extend .p-2;
-  @extend .w-100;
   border-radius: 0;
 }
 
@@ -42,6 +51,21 @@ body {
   &.btn-primary,
   &.btn-success {
     @extend .text-white;
+  }
+
+  &.btn-secondary {
+    background-color: #E1F5FE;
+    color: #0288D1 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+
+    &:active {
+      background-color: #81D4FA;
+    }
+    &:hover {
+      background-color: #B3E5FC;
+    }
   }
 }
 
@@ -122,24 +146,53 @@ body {
   }
 }
 
+.form-check:not(.form-switch) {
+  @extend .ps-0;
+  @extend .flex;
+  @extend .flex-row;
+  @extend .align-items-center;
+  min-height: unset;
+
+  input {
+    @extend .ms-0;
+    @extend .mt-0;
+    @extend .mb-0;
+    @extend .me-2;
+    width: 18px;
+    height: 18px;
+    outline: none;
+    box-shadow: none !important;
+  }
+
+  input[type=checkbox] {
+    border-radius: 0;
+  }
+}
+
+.form-check.form-switch {
+  input[type=checkbox] {
+    @extend .me-2;
+    height: 14px;
+    width: 26px;
+  }
+}
+
+.flex-colum .form-check {
+    @extend .mb-2;
+}
+
 .table.data-table {
   @extend .w-100;
 
   .form-check {
-    @extend .ps-0;
-    min-height: unset;
     input[type=checkbox] {
       @extend .m-0;
-      width: 18px;
-      height: 18px;
-      border-radius: 0;
-      outline: none;
-      box-shadow: none !important;
       &:checked {
         --bs-form-check-bg-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%23fff%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20stroke-width%3D%272%27%20d%3D%27m6%2010%203%203%206-6%27%2F%3E%3C%2Fsvg%3E");
       }
     }
   }
+
   th {
     @extend .fw-500;
     @extend .bg-light;
@@ -244,4 +297,16 @@ body {
     @extend .m-0;
     @extend .p-0;
   }
+}
+
+input[type=text],
+input[type=password],
+select {
+  @extend .fs-6;
+}
+
+select {
+  @extend .form-control;
+  @extend .form-control-sm;
+  @extend .form-select;
 }
