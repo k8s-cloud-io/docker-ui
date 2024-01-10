@@ -1,21 +1,20 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
-import {BlockingDialog, Button, ErrorDialog, ListView, Page, Toolbar, TextInput} from "@core";
+import {BlockingDialog, Button, ErrorDialog, ListView, Page, Toolbar} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {createRef, RefObject, useEffect, useRef, useState} from "react";
+import React, {createRef, RefObject, useEffect, useState} from "react";
 import {NETWORK_LIST} from "@projections/docker-query";
-import {NETWORK_CREATE, NETWORK_PRUNE, NETWORK_DELETE} from "@projections/docker-mutation";
+import {NETWORK_PRUNE, NETWORK_DELETE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {Alert, Modal} from "react-bootstrap";
+import {useNavigate} from "@k8s-cloud-io/react-router";
 
 const DockerNetworkListView = () => {
-    const networkNameRef: RefObject<any> = createRef();
     const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
-    const [createDialogVisible, setCreateDialogVisible] = useState(false);
     const [pruneDialogVisible, setPruneDialogVisible] = useState(false);
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
-    const [networkNameError, setNetworkNameError] = useState(null);
+    const navigate = useNavigate();
     const state = useQuery({
         query: NETWORK_LIST
     })
@@ -44,30 +43,6 @@ const DockerNetworkListView = () => {
         }).catch(e => {
             setPruneDialogVisible(false)
             setErrorMessage(e.extensions['debugMessage'] || e.message);
-            state.refresh();
-        });
-    }
-
-    const hideCreateNetworkDialog = () => {
-        setCreateDialogVisible(false)
-    }
-
-    const createNetwork = () => {
-        const name = networkNameRef.current.value?.trim();
-        setNetworkNameError(null);
-        if( !name?.length ) {
-            setNetworkNameError("Invalid network name");
-            return;
-        }
-
-        state.client.mutate({
-            mutation: NETWORK_CREATE,
-            variables: {
-                name: name,
-                driver: "bridge"
-            }
-        }).then(() => {
-            hideCreateNetworkDialog();
             state.refresh();
         });
     }
@@ -104,39 +79,12 @@ const DockerNetworkListView = () => {
             </Button>
             <span className={'flex flex-grow-1'}/>
             <Button className={'btn-primary'} onClick={() => {
-                setNetworkNameError(null);
-                setCreateDialogVisible(true);
-                if( networkNameRef?.current ) {
-                    networkNameRef.current.value = "";
-                }
+                navigate('/docker/networks/create');
             }}>
                 <span className={'material-icons-outlined'}>add_box</span>
                 <span>Add Network</span>
             </Button>
         </Toolbar>
-        <Modal show={createDialogVisible} onHide={hideCreateNetworkDialog}>
-            <Modal.Header closeButton>
-                <Modal.Title>Create Network</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {
-                    networkNameError &&
-                    <Alert variant={'danger'}>{networkNameError}</Alert>
-                }
-                <div className={'row align-items-center'}>
-                    <label className={'form-label fw-400 col-2 m-0'}>Name</label>
-                    <div className={'col-10'}>
-                        <TextInput ref={networkNameRef} onChange={(e) => {
-                            networkNameRef.current.value = e.currentTarget.value;
-                        }} />
-                    </div>
-                </div>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button onClick={hideCreateNetworkDialog}>Cancel</Button>
-                <Button className={'btn-primary'} onClick={createNetwork}>Create</Button>
-            </Modal.Footer>
-        </Modal>
         <BlockingDialog
             title={'Delete Networks'}
             message={'Please wait, until unused networks are deleted...'}

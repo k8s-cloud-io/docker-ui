@@ -13,8 +13,8 @@ export const NETWORK_PRUNE = gql`
 `;
 
 export const NETWORK_CREATE = gql`
-    mutation createNetwork($name: String!, $driver: String!) {
-        createNetwork(name: $name, driver: $driver)
+    mutation createNetwork($config: NetworkConfig!) {
+        createNetwork(config: $config)
     }
 `;
 
