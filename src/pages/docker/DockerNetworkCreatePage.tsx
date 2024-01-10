@@ -1,10 +1,10 @@
 import React, {useRef, RefObject, useState, forwardRef, useEffect} from "react";
 import {DockerPage} from "./DockerPage";
-import {Page, Checkbox, Button, TextInput} from "@core";
+import {Page, Button, Checkbox, TextInput} from "@core";
 import {useNavigate} from "@k8s-cloud-io/react-router";
 import {useGraphQLClient} from "@k8s-cloud-io/react-graphql";
 import {NETWORK_CREATE} from "@projections/docker-mutation";
-import {Alert, Form} from "react-bootstrap";
+import {Alert, Collapse, Form} from "react-bootstrap";
 
 const isIPAddr = (ipaddress: string) => {
     return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress);
@@ -55,7 +55,7 @@ const SubnetConfig = forwardRef((props, ref: any) => {
         setConfig({...config})
     }
 
-    return <div className={'row flex flex-row align-items-center mb-3 subnet-item'}>
+    return <div className={'row flex flex-row align-items-center mt-3 mb-3 subnet-item'}>
         <label className={'col-1 form-label m-0'}>CIDR</label>
         <div className={'col-3 flex flex-row align-items-center'}>
             <input onChange={onConfigChange} type={'text'} ref={inputRef} className={'form-control form-control-sm me-3'} placeholder={'enter address'}/>
@@ -83,6 +83,7 @@ export const DockerNetworkCreatePage = () => {
     const [subnetType, setSubnetType] = useState('auto');
     const [createdNetwork, setCreatedNetwork] = useState(null);
     const [error, setError] = useState(null);
+    const [showOptions, setShowOptions] = useState<boolean>(false);
     const goBack = () => {
         navigate('/docker/networks')
     }
@@ -190,31 +191,45 @@ export const DockerNetworkCreatePage = () => {
                             </select>
                         </div>
                     </div>
-                    <div className={'row flex flex-row align-items-center mb-3'}>
-                        <label className={'col-1 form-label m-0'}>Internal Only</label>
-                        <div className={'col-3'}>
-                            <Form.Check ref={internalRef} type={'switch'}/>
+                    <div className={'row mb-3'}>
+                        <div className={'col-1'}></div>
+                        <div className={'col-3'} style={{height: 'auto', width: '400'}}>
+                            <div className={'border rounded-1'}>
+                                <Button
+                                    className={'collapse-toggle'}
+                                    onClick={() => {
+                                        setShowOptions(!showOptions)
+                                    }}>Options</Button>
+                                <Collapse in={showOptions}>
+                                    <div className={'container p-2 border-top'}>
+                                        <div className={'row row-cols-3 flex flex-row align-items-center mb-2'}>
+                                            <label className={'col form-label m-0'}>Internal Only</label>
+                                            <div className={'col'}>
+                                                <Form.Check ref={internalRef} type={'switch'}/>
+                                            </div>
+                                        </div>
+                                        <div className={'row row-cols-3 flex flex-row align-items-center'}>
+                                            <label className={'col form-label m-0'}>Ingress Network</label>
+                                            <div className={'col'}>
+                                                <Form.Check ref={ingressRef} type={'switch'}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Collapse>
+                            </div>
                         </div>
                     </div>
-                    <div className={'row flex flex-row align-items-center mb-3'}>
-                        <label className={'col-1 form-label m-0'}>Ingress Network</label>
-                        <div className={'col-3'}>
-                            <Form.Check ref={ingressRef} type={'switch'}/>
-                        </div>
-                    </div>
+                    <h6>Subnet Configuration</h6>
                     <div className={'row'}>
                         <label className={'col-1 form-label'}>Subnet Type</label>
                         <div className={'col-3 flex flex-column'}>
-                            <Checkbox onChange={onSubnetTypeChange} type={'radio'} label={'Automatic'} name={'creation-type'} value={'auto'} defaultChecked={true}/>
+                            <Checkbox className={'mb-2'} onChange={onSubnetTypeChange} type={'radio'} label={'Automatic'} name={'creation-type'} value={'auto'} defaultChecked={true}/>
                             <Checkbox onChange={onSubnetTypeChange} type={'radio'} label={'Manual'} name={'creation-type'} value={'manual'}/>
                         </div>
                     </div>
                     {
                         subnetType === 'manual' &&
-                        <div className={'mt-3'}>
-                            <h6>Subnet Configuration</h6>
-                            <SubnetConfig ref={configRef} />
-                        </div>
+                        <SubnetConfig ref={configRef} />
                     }
                     <div className={'flex flex-row align-items-center justify-content-end pe-3 col-4 mt-4'}>
                         <Button className={'btn-sm me-3'} onClick={() => {
