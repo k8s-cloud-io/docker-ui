@@ -30,6 +30,8 @@ export const usePageTitle = () => {
 
 export const PageTitle = memo(() => {
     const ctx = usePageTitle();
+    if( !ctx.pageTitle ) return null;
+
     const navigate = useNavigate();
     if( ctx.backLink ) {
         return <h5 className={'page-title'}>
