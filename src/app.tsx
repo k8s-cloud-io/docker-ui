@@ -20,7 +20,7 @@ const Home = () => {
 
 const NotFound = () => {
     return <Page>
-        <Alert variant={'danger'} className={'p-2'}>
+        <Alert variant={'danger'} className={'p-2 m-3'}>
             <AlertHeading className={'h6'}>Error - 404</AlertHeading>
             The requested url {window.location.pathname} could not be found
         </Alert>
