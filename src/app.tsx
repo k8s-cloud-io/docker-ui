@@ -10,10 +10,20 @@ import {
     GraphQLProvider
 } from "@k8s-cloud-io/react-graphql";
 import {Page} from "@core";
+import {Alert, AlertHeading} from "react-bootstrap";
 
 const Home = () => {
     return <Page>
         HOME
+    </Page>
+}
+
+const NotFound = () => {
+    return <Page>
+        <Alert variant={'danger'} className={'p-2'}>
+            <AlertHeading className={'h6'}>Error - 404</AlertHeading>
+            The requested url {window.location.pathname} could not be found
+        </Alert>
     </Page>
 }
 
@@ -44,6 +54,7 @@ const App = () => {
             <Route path={'/docker/networks'} element={<DockerNetworkListPage />} />
             <Route path={'/docker/volumes'} element={<DockerVolumeListPage />} />
             <Route path={'/'} element={<Home />} />
+            <Route path={'*'} element={<NotFound />} />
         </BrowserRouter>
     </GraphQLProvider>
 }
