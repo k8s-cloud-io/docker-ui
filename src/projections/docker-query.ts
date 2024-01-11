@@ -13,6 +13,7 @@ export const CONTAINER_LIST = gql`
                 publicPort
                 type
             }
+            labels
             networkSettings
         }
     }
@@ -25,6 +26,7 @@ export const IMAGE_LIST = gql`
             created
             repoTags
             size
+            labels
         }
     }
 `;
@@ -61,6 +63,7 @@ export const VOLUME_LIST = gql`
     query volumes {
         volumes {
             name
+            labels
             createdAt
         }
     }

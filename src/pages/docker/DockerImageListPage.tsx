@@ -101,7 +101,7 @@ const DockerImageListView = () => {
             ref={listRef}
             onSelectionChange={(items) => setSelectedItems(items)}
             headers={[
-                'name', 'version', 'size', 'created at'
+                'name', 'version', 'size', 'labels', 'created at'
             ]}
             fields={{
                 name: (value: any) => {
@@ -125,6 +125,13 @@ const DockerImageListView = () => {
                 },
                 size: (value: any) => {
                     return bytesToSize(value['size']);
+                },
+                labels: (value: any) => {
+                    return Object.keys(value['labels'] || {}).map( key => {
+                        return <span>
+                            {key}: {value['labels'][key]}
+                        </span>
+                    });
                 },
                 created: (value: any) => {
                     return dayjs(value.created * 1000).format("YYYY-MM-DD HH:mm:ss")

@@ -93,11 +93,18 @@ const DockerVolumeListView = () => {
             ref={listRef}
             onSelectionChange={(items) => setSelectedItems(items)}
             headers={[
-                'name', 'created at'
+                'name', 'labels', 'created at'
             ]}
             fields={{
                 name: (value: any) => {
                     return value.name;
+                },
+                labels: (value: any) => {
+                    return Object.keys(value['labels'] || {}).map( key => {
+                        return <span>
+                                    {key}: {value['labels'][key]}
+                                </span>
+                    });
                 },
                 created: (value: any) => {
                     return dayjs(value['createdAt']).format("YYYY-MM-DD HH:mm:ss")
