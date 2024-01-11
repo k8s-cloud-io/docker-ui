@@ -1,18 +1,20 @@
 import {useQuery} from "@k8s-cloud-io/react-graphql";
 import {Page, Toolbar, ListView, Button, ErrorDialog, BlockingDialog} from "@core";
 import {DockerPage} from "./DockerPage";
-import React, {createRef, RefObject, useEffect, useRef, useState} from "react";
+import React, {createRef, RefObject, useEffect, useState} from "react";
 import {VOLUME_LIST} from "@projections/docker-query";
 import {VOLUME_DELETE, VOLUME_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {Alert, Modal, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
+import {useNavigate} from "@k8s-cloud-io/react-router";
 
 const DockerVolumeListView = () => {
     const listRef: RefObject<any> = createRef();
     const [selectedItems, setSelectedItems] = useState([]);
     const [errorMessage, setErrorMessage] = useState(null);
-    const [blockingDialogVisible, setBlockingDialogVisible] = useState(false);
+    const [deleteBlockingDialogVisible, setDeleteBlockingDialogVisible] = useState(false);
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+    const navigate = useNavigate();
     const state = useQuery({
         query: VOLUME_LIST
     })
@@ -28,7 +30,7 @@ const DockerVolumeListView = () => {
 
     const deleteVolumes = () => {
         setDeleteDialogVisible(false);
-        setBlockingDialogVisible(true);
+        setDeleteBlockingDialogVisible(true);
         state.client.mutate({
             mutation: VOLUME_DELETE,
             variables: {
@@ -36,11 +38,11 @@ const DockerVolumeListView = () => {
             }
         })
             .then(() => {
-                setBlockingDialogVisible(false);
+                setDeleteBlockingDialogVisible(false);
                 state.refresh();
             })
             .catch(e => {
-                setBlockingDialogVisible(false);
+                setDeleteBlockingDialogVisible(false);
                 setErrorMessage(e.extensions['debugMessage'] || e.message);
                 state.refresh();
             });
@@ -88,6 +90,13 @@ const DockerVolumeListView = () => {
                 <span className={'material-icons-outlined text-danger'}>delete</span>
                 <span className={'text-danger'}>Delete</span>
             </Button>
+            <span className={'flex flex-grow-1'}/>
+            <Button className={'btn-primary'} onClick={() => {
+                navigate('/docker/volumes/create')
+            }}>
+                <span className={'material-icons-outlined'}>add_box</span>
+                <span>Add Volume</span>
+            </Button>
         </Toolbar>
         <ListView
             ref={listRef}
@@ -117,8 +126,8 @@ const DockerVolumeListView = () => {
         <BlockingDialog
             title={'Delete Volumes'}
             message={'Please wait, while selected volumes are deleted...'}
-            visible={blockingDialogVisible}
-            onHide={() => setBlockingDialogVisible(false)}
+            visible={deleteBlockingDialogVisible}
+            onHide={() => setDeleteBlockingDialogVisible(false)}
         />
         <Modal show={deleteDialogVisible} onHide={hideDeleteDialog}>
             <ModalHeader closeButton>
