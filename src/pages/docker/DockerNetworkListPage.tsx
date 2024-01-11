@@ -108,7 +108,7 @@ const DockerNetworkListView = () => {
             ref={listRef}
             onSelectionChange={(items) => setSelectedItems(items)}
             headers={[
-                'name', 'driver', 'scope', 'subnet', 'created at'
+                'name', 'driver', 'scope', 'subnet', 'labels', 'created at'
             ]}
             fields={{
                 name: (value: any) => {
@@ -128,6 +128,13 @@ const DockerNetworkListView = () => {
                     }
 
                     return null;
+                },
+                labels: (value: any) => {
+                    return Object.keys(value['labels'] || {}).map( key => {
+                        return <span>
+                            {key}: {value['labels'][key]}
+                        </span>
+                    });
                 },
                 created: (value: any) => {
                     return dayjs(value.created).format("YYYY-MM-DD HH:mm:ss")

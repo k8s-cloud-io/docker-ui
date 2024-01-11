@@ -47,6 +47,7 @@ export const NETWORK_LIST = gql`
     query networks {
         networks {
             id
+            labels
             name
             created
             scope
