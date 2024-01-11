@@ -1,10 +1,12 @@
-import React, {useRef, RefObject, useState, forwardRef, useEffect, createRef} from "react";
+import React, {useRef, RefObject, useState, forwardRef, useEffect} from "react";
 import {DockerPage} from "./DockerPage";
 import {Page, Button, Checkbox, TextInput} from "@core";
 import {useNavigate} from "@k8s-cloud-io/react-router";
 import {useGraphQLClient} from "@k8s-cloud-io/react-graphql";
 import {NETWORK_CREATE} from "@projections/docker-mutation";
 import {Alert, Collapse, Form, Modal} from "react-bootstrap";
+import {LabelObject} from "./props";
+import {LabelCreator} from "./partials/LabelCreator";
 
 const isIPAddr = (ipaddress: string) => {
     return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress);
@@ -75,10 +77,6 @@ const SubnetConfig = forwardRef((props:{error?: string}, ref: any) => {
     </div>
 });
 
-type LabelObject = {
-    [key: string]: string;
-}
-
 export const DockerNetworkCreatePage = () => {
     const navigate = useNavigate();
     const graphqlClient = useGraphQLClient();
@@ -90,29 +88,17 @@ export const DockerNetworkCreatePage = () => {
         ipAddress: string,
         suffix: number
     }>();
-    const labelKeyRef: RefObject<HTMLInputElement> = useRef();
-    const labelValRef: RefObject<HTMLInputElement> = useRef();
     const [labels, setLabels] = useState<LabelObject>(null);
 
     const [subnetType, setSubnetType] = useState('auto');
     const [createdNetwork, setCreatedNetwork] = useState(null);
     const [createError, setCreateError] = useState(null);
-    const [labelError, setLabelError] = useState(null);
     const [showOptions, setShowOptions] = useState<boolean>(false);
-    const [labelDialogVisible, setLabelDialogVisible] = useState(false);
     const goBack = () => {
         navigate('/docker/networks')
     }
     const onNameChange = (e: any) => {
         nameRef.current.value = e.currentTarget.value;
-    }
-
-    const onLabelKeyChange = (e: any) => {
-        labelKeyRef.current.value = e.currentTarget.value;
-    }
-
-    const onLabelValueChange = (e: any) => {
-        labelValRef.current.value = e.currentTarget.value;
     }
 
     const onSubnetTypeChange = (e) => {
@@ -188,82 +174,12 @@ export const DockerNetworkCreatePage = () => {
         })
     }
 
-    const addLabel = () => {
-        setLabelError(null);
-        const key = labelKeyRef.current.value?.trim();
-        const value = labelValRef.current.value?.trim();
-
-        const isValidKey = key && key.match(/^[a-z][?a-z0-9\/\_\-\.]+[a-z]$/i)?.length
-        if( !isValidKey ) {
-            setLabelError('Invalid label key');
-            return;
-        }
-
-        const isValidVal = value !== undefined && value !== null;
-        if( !isValidVal ) {
-            setLabelError('Invalid label value');
-            return;
-        }
-
-        const newLabels = {...labels}
-        newLabels[key] = value;
-        setLabels(newLabels);
-
-        hideLabelDialog();
-    }
-
-    const deleteLabel = (key: string) => {
-        const newLabels = {};
-        Object.keys(labels).forEach(labelKey => {
-            if( key !== labelKey ) {
-                newLabels[labelKey] = labels[labelKey];
-            }
-        })
-        setLabels(newLabels);
-    }
-
-    const showLabelDialog = () => {
-        setLabelError(null);
-        setLabelDialogVisible(true)
-    }
-
-    const hideLabelDialog = () => {
-        setLabelDialogVisible(false)
+    const onLabelChange = (labels: LabelObject) => {
+        setLabels(labels);
     }
 
     return <Page>
         <DockerPage pageTitle={'Create Network'} backLink={'/docker/networks'}>
-            <Modal show={labelDialogVisible} onHide={hideLabelDialog}>
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Add Label
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className={'container'}>
-                        {
-                            labelError &&
-                            <div className={'row'}>
-                                <Alert className={'p-2'} variant={'danger'}>
-                                    {labelError}
-                                </Alert>
-                            </div>
-                        }
-                        <div className={'row mb-3'}>
-                            <label className={'form-label'}>Label Key</label>
-                            <TextInput ref={labelKeyRef} onChange={onLabelKeyChange} />
-                        </div>
-                        <div className={'row mb-3'}>
-                            <label className={'form-label'}>Label Value</label>
-                            <TextInput ref={labelValRef} onChange={onLabelValueChange} />
-                        </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={hideLabelDialog}>Cancel</Button>
-                    <Button className={'btn-primary'} onClick={addLabel}>Add Label</Button>
-                </Modal.Footer>
-            </Modal>
             {
                 createdNetwork &&
                 <div className={'col-6'}>
@@ -339,31 +255,7 @@ export const DockerNetworkCreatePage = () => {
                     <div className={'row mb-3'}>
                         <label className={'col-1 form-label'}>Labels</label>
                         <div className={'col-3'}>
-                            {
-                                Object.keys(labels||{}).length > 0 &&
-                                <table className={'table data-table table-bordered fs-6 small'}>
-                                    {
-                                        Object.keys(labels).map( labelKey => {
-                                            return <tr>
-                                                <td className={'bg-light border-1 ps-2 pe-2'}>{labelKey}</td>
-                                                <td className={'border-1 ps-2 pe-2'}>{labels[labelKey]}</td>
-                                                <td className={'icon-cell border-1'}>
-                                                    <span onClick={() => {
-                                                        deleteLabel(labelKey)
-                                                    }} className={'material-icons-outlined fs-5 text-danger pt-0 pb-0 cursor-pointer'}>delete</span>
-                                                </td>
-                                            </tr>
-                                        })
-                                    }
-                                </table>
-                            }
-                            {
-                                Object.keys(labels||{}).length === 0 &&
-                                <p>
-                                    <i>There are no labels configured</i>
-                                </p>
-                            }
-                            <Button className={'btn-secondary fs-6'} onClick={showLabelDialog}>Add Label</Button>
+                            <LabelCreator onChange={onLabelChange} />
                         </div>
                     </div>
                     <h6>Subnet Configuration</h6>
