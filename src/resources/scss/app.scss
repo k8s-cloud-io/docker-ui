@@ -176,8 +176,9 @@ body {
     height: 15px;
     width: 30px;
 
-    &:not(:checked):focus {
-      border-color: #ccc;
+    &:not(:checked):focus,
+    &:not(:checked) {
+      border-color: #999;
       --bs-form-switch-bg: url("../images/switch-bg.svg");
     }
 
