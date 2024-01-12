@@ -3,7 +3,7 @@ import {LabelObject} from "../props";
 
 export const LabelRenderer = (props: {labels: LabelObject}) => {
     return Object.keys(props.labels || {}).map( key => {
-        return <span>
+        return <span className={'d-block'}>
             {key}: {props.labels[key]}
         </span>
     });
