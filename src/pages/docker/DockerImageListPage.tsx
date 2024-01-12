@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import {ImageListDetails} from "./partials/ImageListDetails";
 import {bytesToSize} from "@core/utils";
 import {Alert, Modal, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
+import {LabelRenderer} from "./partials/LabelRenderer";
 
 const DockerImageListView = () => {
     const listRef: RefObject<any> = createRef();
@@ -127,11 +128,7 @@ const DockerImageListView = () => {
                     return bytesToSize(value['size']);
                 },
                 labels: (value: any) => {
-                    return Object.keys(value['labels'] || {}).map( key => {
-                        return <span>
-                            {key}: {value['labels'][key]}
-                        </span>
-                    });
+                    return <LabelRenderer labels={value} />
                 },
                 created: (value: any) => {
                     return dayjs(value.created * 1000).format("YYYY-MM-DD HH:mm:ss")

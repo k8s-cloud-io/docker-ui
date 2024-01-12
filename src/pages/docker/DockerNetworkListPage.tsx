@@ -7,6 +7,7 @@ import {NETWORK_PRUNE, NETWORK_DELETE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {Alert, Modal} from "react-bootstrap";
 import {useNavigate} from "@k8s-cloud-io/react-router";
+import {LabelRenderer} from "./partials/LabelRenderer";
 
 const DockerNetworkListView = () => {
     const listRef: RefObject<any> = createRef();
@@ -130,11 +131,7 @@ const DockerNetworkListView = () => {
                     return null;
                 },
                 labels: (value: any) => {
-                    return Object.keys(value['labels'] || {}).map( key => {
-                        return <span>
-                            {key}: {value['labels'][key]}
-                        </span>
-                    });
+                    return <LabelRenderer labels={value} />
                 },
                 created: (value: any) => {
                     return dayjs(value.created).format("YYYY-MM-DD HH:mm:ss")

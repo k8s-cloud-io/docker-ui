@@ -7,6 +7,7 @@ import {VOLUME_DELETE, VOLUME_PRUNE} from "@projections/docker-mutation";
 import dayjs from "dayjs";
 import {Alert, Modal, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
 import {useNavigate} from "@k8s-cloud-io/react-router";
+import {LabelRenderer} from "./partials/LabelRenderer";
 
 const DockerVolumeListView = () => {
     const listRef: RefObject<any> = createRef();
@@ -109,11 +110,7 @@ const DockerVolumeListView = () => {
                     return value.name;
                 },
                 labels: (value: any) => {
-                    return Object.keys(value['labels'] || {}).map( key => {
-                        return <span>
-                                    {key}: {value['labels'][key]}
-                                </span>
-                    });
+                    return <LabelRenderer labels={value} />
                 },
                 created: (value: any) => {
                     return dayjs(value['createdAt']).format("YYYY-MM-DD HH:mm:ss")

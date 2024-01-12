@@ -13,6 +13,7 @@ import {
 import dayjs from "dayjs";
 import {ContainerListDetails} from "./partials/ContainerListDetails";
 import {Alert, Dropdown, Modal, ModalBody, ModalFooter, ModalHeader} from "react-bootstrap";
+import {LabelRenderer} from "./partials/LabelRenderer";
 
 const ActionToggle = forwardRef((props: any, ref: any) => {
     return <span ref={ref} className={'material-icons-outlined cursor-pointer'} onClick={(e) => {
@@ -233,11 +234,7 @@ const DockerContainerListView = () => {
                             return value['state'];
                         },
                         labels: (value: any) => {
-                            return Object.keys(value['labels'] || {}).map( key => {
-                                return <span>
-                                    {key}: {value['labels'][key]}
-                                </span>
-                            });
+                            return <LabelRenderer labels={value} />
                         },
                         created: (value: any) => {
                             return dayjs(value.created * 1000).format("YYYY-MM-DD HH:mm:ss")
