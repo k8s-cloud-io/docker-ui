@@ -2,7 +2,14 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 import "../src/resources/scss/app.scss";
-import {DockerContainerListPage, DockerImageListPage, DockerNetworkCreatePage, DockerNetworkListPage, DockerVolumeListPage} from "./pages/docker";
+import {
+    DockerContainerListPage,
+    DockerImageListPage,
+    DockerNetworkCreatePage,
+    DockerNetworkListPage,
+    DockerVolumeCreatePage,
+    DockerVolumeListPage
+} from "./pages/docker";
 import {BrowserRouter, Route} from "@k8s-cloud-io/react-router";
 import {
     CacheInterface,
@@ -52,6 +59,7 @@ const App = () => {
             <Route path={'/docker/containers'} element={<DockerContainerListPage />} />
             <Route path={'/docker/networks/create'} element={<DockerNetworkCreatePage />} />
             <Route path={'/docker/networks'} element={<DockerNetworkListPage />} />
+            <Route path={'/docker/volumes/create'} element={<DockerVolumeCreatePage />} />
             <Route path={'/docker/volumes'} element={<DockerVolumeListPage />} />
             <Route path={'/'} element={<Home />} />
             <Route path={'*'} element={<NotFound />} />

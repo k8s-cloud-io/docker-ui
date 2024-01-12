@@ -12,6 +12,12 @@ export const NETWORK_PRUNE = gql`
     }
 `;
 
+export const VOLUME_CREATE = gql`
+    mutation createVolume($name: String!, $labels: GraphQLObject) {
+        createVolume(name: $name, labels: $labels)
+    }
+`;
+
 export const NETWORK_CREATE = gql`
     mutation createNetwork($config: NetworkConfig!) {
         createNetwork(config: $config)

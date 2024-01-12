@@ -111,7 +111,7 @@ const DockerContainerListView = () => {
                 refresh()
             })
             .catch(e => {
-                setErrorMessage(e.extensions['debugMessage'] || e.message);
+                setErrorMessage((e.extensions && e.extensions['debugMessage']) || e.message);
                 refresh();
             });
     }

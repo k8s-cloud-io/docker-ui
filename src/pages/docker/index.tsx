@@ -5,3 +5,4 @@ export * from "./DockerNetworkListPage"
 export * from "./DockerNetworkCreatePage";
 export * from "./DockerPage"
 export * from "./DockerVolumeListPage";
+export * from "./DockerVolumeCreatePage"
