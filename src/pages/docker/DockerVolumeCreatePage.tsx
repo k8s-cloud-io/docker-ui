@@ -33,8 +33,8 @@ export const DockerVolumeCreatePage = () => {
             return;
         }
 
-        if( !name.match(/[a-z][?a-zA-Z0-9\-\_]/i)) {
-            setCreateError('Name must be start with a letter and must match /[a-z][?a-zA-Z0-9\\-\\_]/i');
+        if( !name?.match(/^[a-z][?a-z0-9\-\_]$/i)) {
+            setCreateError('Name must be start with a letter and must match /^[a-z][?a-z0-9\\-\\_]$/i');
             return;
         }
 
