@@ -131,7 +131,7 @@ const DockerNetworkListView = () => {
                     return null;
                 },
                 labels: (value: any) => {
-                    return <LabelRenderer labels={value} />
+                    return <LabelRenderer labels={value.labels} />
                 },
                 created: (value: any) => {
                     return dayjs(value.created).format("YYYY-MM-DD HH:mm:ss")

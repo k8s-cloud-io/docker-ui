@@ -128,7 +128,7 @@ const DockerImageListView = () => {
                     return bytesToSize(value['size']);
                 },
                 labels: (value: any) => {
-                    return <LabelRenderer labels={value} />
+                    return <LabelRenderer labels={value.labels} />
                 },
                 created: (value: any) => {
                     return dayjs(value.created * 1000).format("YYYY-MM-DD HH:mm:ss")

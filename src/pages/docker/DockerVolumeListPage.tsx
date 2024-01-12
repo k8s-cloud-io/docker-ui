@@ -110,7 +110,7 @@ const DockerVolumeListView = () => {
                     return value.name;
                 },
                 labels: (value: any) => {
-                    return <LabelRenderer labels={value} />
+                    return <LabelRenderer labels={value.labels} />
                 },
                 created: (value: any) => {
                     return dayjs(value['createdAt']).format("YYYY-MM-DD HH:mm:ss")
