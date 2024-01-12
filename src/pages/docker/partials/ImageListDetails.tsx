@@ -5,6 +5,7 @@ import {IMAGE_DETAILS} from "@projections/docker-query";
 import dayjs from "dayjs";
 import {bytesToSize} from "@core/utils";
 import {Alert, Offcanvas} from "react-bootstrap";
+import {LabelRenderer} from "./LabelRenderer";
 
 export const ImageListDetails = (props: ImageDetailsProps) => {
     const client = useGraphQLClient();
@@ -82,6 +83,12 @@ export const ImageListDetails = (props: ImageDetailsProps) => {
                         <tr>
                             <th className={'bg-light border-1 ps-2 pe-2'}>size</th>
                             <td className={'border-1 ps-2 pe-2'}>{bytesToSize(state.data.size)}</td>
+                        </tr>
+                        <tr>
+                            <th className={'bg-light border-1 ps-2 pe-2'}>labels</th>
+                            <td className={'border-1 ps-2 pe-2'}>
+                                <LabelRenderer labels={state.data.labels} />
+                            </td>
                         </tr>
                     </table>
                     <h6 className={'mb-3'}>Executable</h6>

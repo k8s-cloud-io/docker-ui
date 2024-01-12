@@ -5,6 +5,7 @@ import {CONTAINER_DETAILS} from "@projections/docker-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {Alert, Offcanvas} from "react-bootstrap";
+import {LabelRenderer} from "./LabelRenderer";
 
 dayjs.extend(relativeTime);
 export const ContainerListDetails = (props: ContainerListDetailsProps) => {
@@ -102,11 +103,7 @@ export const ContainerListDetails = (props: ContainerListDetailsProps) => {
                                 <tr>
                                     <th className={'bg-light border-1 ps-2 pe-2'}>Labels</th>
                                     <td className={'border-1 ps-2 pe-2'}>
-                                        {
-                                            Object.keys(state.data.config.labels).map( label => {
-                                                return <span className={'p-0'}>{label}: {state.data.config.labels[label]}</span>
-                                            })
-                                        }
+                                        <LabelRenderer labels={state.data.config.labels} />
                                     </td>
                                 </tr>
                             </>
